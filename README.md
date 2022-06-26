@@ -34,14 +34,14 @@ Web Hosting Control Panel that uses OpenLiteSpeed as the underlying Web Server.
 
 
 ```
-sh <(curl https://cyberpanel.net/install.sh || wget -O - https://cyberpanel.net/install.sh)
+sh <(curl https://raw.githubusercontent.com/tbaldur/cyberpanel/stable/cyberpanel.sh || wget -O - https://raw.githubusercontent.com/tbaldur/cyberpanel/stable/install.sh)
 ```
 
 # Upgrading CyberPanel
 
 
 ```
-sh <(curl https://raw.githubusercontent.com/usmannasir/cyberpanel/stable/preUpgrade.sh || wget -O - https://raw.githubusercontent.com/usmannasir/cyberpanel/stable/preUpgrade.sh)
+sh <(curl https://raw.githubusercontent.com/tbaldur/cyberpanel/stable/preUpgrade.sh || wget -O - https://raw.githubusercontent.com/tbaldur/cyberpanel/stable/preUpgrade.sh)
 ```
 
 # Resources
@@ -54,3 +54,4 @@ sh <(curl https://raw.githubusercontent.com/usmannasir/cyberpanel/stable/preUpgr
 * [Discord.](https://discord.gg/g8k8Db3)
 * [Facebook Group.](https://www.facebook.com/groups/cyberpanel)
 * [YouTube Channel.](https://www.youtube.com/channel/UCS6sgUWEhaFl1TO238Ck0xw)
+* [FAQ](https://community.cyberpanel.net/t/faq-common-issues-read-here-first/35375/2)
