@@ -1,6 +1,12 @@
-# CyberPanel
+# CyberPanel-LTS
 
 Web Hosting Control Panel that uses OpenLiteSpeed as the underlying Web Server.
+
+This is a fork intended for LTS (Long Term Support), where goal is to make it stable and bug-free.
+New features are NOT a priority
+
+DISCLAIMER: I am NOT affiliated with the cyberpanel team. I think they are doing a great job, yet i created this for my personal needs, as i only need  stability and no new features.
+This is STILL IN PROGRESS. Please use the official cyberpanel instead.
 
 ## Features & Services
 
@@ -22,36 +28,25 @@ Web Hosting Control Panel that uses OpenLiteSpeed as the underlying Web Server.
 * PHP 7.4
 * PHP 7.3
 * PHP 7.2
-* PHP 7.1
-* PHP 7.0
-* PHP 5.6
-* PHP 5.5
-* PHP 5.4
-* PHP 5.3
 
 
 # Installation Instructions
 
 
 ```
-sh <(curl https://raw.githubusercontent.com/tbaldur/cyberpanel/stable/cyberpanel.sh || wget -O - https://raw.githubusercontent.com/tbaldur/cyberpanel/stable/install.sh)
+sh <(curl https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/cyberpanel.sh || wget -O - https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/install.sh)
 ```
 
 # Upgrading CyberPanel
 
 
 ```
-sh <(curl https://raw.githubusercontent.com/tbaldur/cyberpanel/stable/preUpgrade.sh || wget -O - https://raw.githubusercontent.com/tbaldur/cyberpanel/stable/preUpgrade.sh)
+sh <(curl https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/preUpgrade.sh || wget -O - https://raw.githubusercontent.com/tbaldur-LTS/cyberpanel/stable/preUpgrade.sh)
 ```
 
 # Resources
 
 * [Official Site.](https://cyberpanel.net)
-* [Docs (Old).](https://docs.cyberpanel.net)
 * [Docs (New).](https://community.cyberpanel.net/docs)
-* [Changelog.](https://community.cyberpanel.net/t/change-logs/161)
 * [Forums.](https://community.cyberpanel.net)
-* [Discord.](https://discord.gg/g8k8Db3)
-* [Facebook Group.](https://www.facebook.com/groups/cyberpanel)
-* [YouTube Channel.](https://www.youtube.com/channel/UCS6sgUWEhaFl1TO238Ck0xw)
 * [FAQ](https://community.cyberpanel.net/t/faq-common-issues-read-here-first/35375/2)
