@@ -82,23 +82,13 @@ echo -e "\nChecking root privileges..."
 Check_Server_IP() {
 echo -e "Checking server location...\n"
 
-Server_Country=$(curl --silent --max-time 10 -4 https://cyberpanel.sh/?country)
+Server_Country=$(curl --silent --max-time 10 -4 https://ipinfo.io/$(curl --silent --max-time 30 -4 https://ipv4.wtfismyip.com/text)/country)
 if [[ ${#Server_Country} != "2" ]] ; then
   Server_Country="Unknow"
 fi
 
 if [[ "$Debug" = "On" ]] ; then
   Debug_Log "Server_Country" "$Server_Country"
-fi
-
-if [[ "$*" = *"--mirror"* ]] ; then
-  Server_Country="CN"
-  echo -e "Force to use mirror server due to --mirror argument...\n"
-fi
-
-if [[ "$Server_Country" = *"CN"* ]] ; then
-  Server_Country="CN"
-  echo -e "Setting up to use mirror server...\n"
 fi
 }
 
@@ -151,12 +141,8 @@ if hash dmidecode >/dev/null 2>&1; then
     Server_Provider="Google Cloud Platform"
   elif [[ "$(dmidecode -s bios-vendor)" = "DigitalOcean" ]]; then
     Server_Provider="Digital Ocean"
-  elif [[ "$(dmidecode -s system-product-name | cut -c 1-7)" = "Alibaba" ]]; then
-    Server_Provider="Alibaba Cloud"
   elif [[ "$(dmidecode -s system-manufacturer)" = "Microsoft Corporation" ]]; then
     Server_Provider="Microsoft Azure"
-  elif [[ -d /usr/local/qcloud ]]; then
-    Server_Provider="Tencent Cloud"
   else
     Server_Provider="Undefined"
   fi
@@ -268,15 +254,9 @@ fi
 }
 
 Pre_Upgrade_Setup_Git_URL() {
-  if [[ $Server_Country != "CN" ]] ; then
-    Git_User="usmannasir"
+    Git_User="tbaldur"
     Git_Content_URL="https://raw.githubusercontent.com/${Git_User}/cyberpanel"
     Git_Clone_URL="https://github.com/${Git_User}/cyberpanel.git"
-  else
-    Git_User="qtwrk"
-    Git_Content_URL="https://gitee.com/${Git_User}/cyberpanel/raw"
-    Git_Clone_URL="https://gitee.com/${Git_User}/cyberpanel.git"
-  fi
 
   if [[ "$Debug" = "On" ]] ; then
     Debug_Log "Git_URL" "$Git_Content_URL"
@@ -310,11 +290,7 @@ Pre_Upgrade_Setup_Repository() {
 if [[ "$Server_OS" = "CentOS" ]] ; then
   rm -f /etc/yum.repos.d/CyberPanel.repo
   rm -f /etc/yum.repos.d/litespeed.repo
-  if [[ "$Server_Country" = "CN" ]] ; then
-    curl -o /etc/yum.repos.d/litespeed.repo https://cyberpanel.sh/litespeed/litespeed_cn.repo
-  else
     curl -o /etc/yum.repos.d/litespeed.repo https://cyberpanel.sh/litespeed/litespeed.repo
-  fi
   yum clean all
   yum update -y
   yum autoremove epel-release -y
@@ -369,19 +345,6 @@ EOF
     yum copr enable copart/restic -y
     rpm -ivh https://cyberpanel.sh/repo.ius.io/ius-release-el7.rpm
 
-    if [[ "$Server_Country" = "CN" ]] ; then
-      sed -i 's|http://yum.mariadb.org|https://cyberpanel.sh/yum.mariadb.org|g' /etc/yum.repos.d/MariaDB.repo
-      sed -i 's|https://yum.mariadb.org/RPM-GPG-KEY-MariaDB|https://cyberpanel.sh/yum.mariadb.org/RPM-GPG-KEY-MariaDB|g' /etc/yum.repos.d/MariaDB.repo
-      # use MariaDB Mirror
-      sed -i 's|https://download.copr.fedorainfracloud.org|https://cyberpanel.sh/download.copr.fedorainfracloud.org|g' /etc/yum.repos.d/_copr_copart-restic.repo
-      sed -i 's|http://repo.iotti.biz|https://cyberpanel.sh/repo.iotti.biz|g' /etc/yum.repos.d/frank.repo
-      sed -i "s|mirrorlist=http://mirrorlist.ghettoforge.org/el/7/gf/\$basearch/mirrorlist|baseurl=https://cyberpanel.sh/mirror.ghettoforge.org/distributions/gf/el/7/gf/x86_64/|g" /etc/yum.repos.d/gf.repo
-      sed -i "s|mirrorlist=http://mirrorlist.ghettoforge.org/el/7/plus/\$basearch/mirrorlist|baseurl=https://cyberpanel.sh/mirror.ghettoforge.org/distributions/gf/el/7/plus/x86_64/|g" /etc/yum.repos.d/gf.repo
-      sed -i 's|https://repo.ius.io|https://cyberpanel.sh/repo.ius.io|g' /etc/yum.repos.d/ius.repo
-      sed -i 's|http://repo.iotti.biz|https://cyberpanel.sh/repo.iotti.biz|g' /etc/yum.repos.d/lux.repo
-      sed -i 's|http://repo.powerdns.com|https://cyberpanel.sh/repo.powerdns.com|g' /etc/yum.repos.d/powerdns-auth-43.repo
-      sed -i 's|https://repo.powerdns.com|https://cyberpanel.sh/repo.powerdns.com|g' /etc/yum.repos.d/powerdns-auth-43.repo
-    fi
     yum install yum-plugin-priorities -y
 
     yum update -y
@@ -403,11 +366,7 @@ EOF
 #EOF
   rm -f /etc/yum.repos.d/CentOS-PowerTools-CyberPanel.repo
 
-  if [[ "$Server_Country" = "CN" ]] ; then
-    dnf --nogpg install -y https://cyberpanel.sh/mirror.ghettoforge.org/distributions/gf/gf-release-latest.gf.el8.noarch.rpm
-  else
     dnf --nogpg install -y https://mirror.ghettoforge.org/distributions/gf/gf-release-latest.gf.el8.noarch.rpm
-  fi
 
   dnf install epel-release -y
 
@@ -513,29 +472,12 @@ fi
 
 wget "${Git_Content_URL}/${Branch_Name}/plogical/upgrade.py"
 
-if [[ "$Server_Country" = "CN" ]] ; then
-  sed -i 's|git clone https://github.com/usmannasir/cyberpanel|echo git cloned|g' upgrade.py
-
-  Retry_Command "git clone ${Git_Clone_URL}"
-    Check_Return "git clone ${Git_Clone_URL}"
-
-  # shellcheck disable=SC2086
-  sed -i 's|https://raw.githubusercontent.com/usmannasir/cyberpanel/stable/install/litespeed/httpd_config.xml|'${Git_Content_URL}/${Branch_Name}'//install/litespeed/httpd_config.xml|g' upgrade.py
-  sed -i 's|https://cyberpanel.sh/composer.sh|https://gitee.com/qtwrk/cyberpanel/raw/stable/install/composer_cn.sh|g' upgrade.py
-fi
-
 }
 
 Pre_Upgrade_Setup_Git_URL() {
-if [[ $Server_Country != "CN" ]] ; then
-  Git_User="usmannasir"
+  Git_User="tbaldur"
   Git_Content_URL="https://raw.githubusercontent.com/${Git_User}/cyberpanel"
   Git_Clone_URL="https://github.com/${Git_User}/cyberpanel.git"
-else
-  Git_User="qtwrk"
-  Git_Content_URL="https://gitee.com/${Git_User}/cyberpanel/raw"
-  Git_Clone_URL="https://gitee.com/${Git_User}/cyberpanel.git"
-fi
 
 if [[ "$Debug" = "On" ]] ; then
   Debug_Log "Git_URL" "$Git_Content_URL"
@@ -662,11 +604,6 @@ sed -i "s|lsws-5.3.8|lsws-$LSWS_Stable_Version|g" /usr/local/CyberCP/serverStatu
 sed -i "s|lsws-5.4.2|lsws-$LSWS_Stable_Version|g" /usr/local/CyberCP/serverStatus/serverStatusUtil.py
 sed -i "s|lsws-5.3.5|lsws-$LSWS_Stable_Version|g" /usr/local/CyberCP/serverStatus/serverStatusUtil.py
 
-if [[ "$Server_Country" = "CN" ]] ; then
-  sed -i 's|https://www.litespeedtech.com/|https://cyberpanel.sh/www.litespeedtech.com/|g' /usr/local/CyberCP/serverStatus/serverStatusUtil.py
-  sed -i 's|http://license.litespeedtech.com/|https://cyberpanel.sh/license.litespeedtech.com/|g' /usr/local/CyberCP/serverStatus/serverStatusUtil.py
-fi
-
 sed -i 's|python2|python|g' /usr/bin/adminPass
 chmod 700 /usr/bin/adminPass
 
@@ -697,7 +634,7 @@ if echo "$Tmp_Output" | grep -q "mail@example.com" ; then
 fi
 
 if [[ ! -f /usr/bin/cyberpanel_utility ]]; then
-  wget -q -O /usr/bin/cyberpanel_utility https://cyberpanel.sh/misc/cyberpanel_utility.sh
+  wget -q -O /usr/bin/cyberpanel_utility https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/cyberpanel_utility.sh
   chmod 700 /usr/bin/cyberpanel_utility
 fi
 

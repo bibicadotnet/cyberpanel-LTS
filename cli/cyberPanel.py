@@ -1320,7 +1320,7 @@ def main():
 
     elif args.function == 'utility':
         if not os.path.exists('/usr/bin/cyberpanel_utility'):
-            command = 'wget -q -O /usr/bin/cyberpanel_utility https://cyberpanel.sh/misc/cyberpanel_utility.sh'
+            command = 'wget -q -O /usr/bin/cyberpanel_utility https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/cyberpanel_utility.sh'
             ProcessUtilities.executioner(command)
 
             command = 'chmod 700 /usr/bin/cyberpanel_utility'
@@ -1330,7 +1330,7 @@ def main():
         ProcessUtilities.executioner(command)
     elif args.function == 'upgrade' or args.function == 'update':
         if not os.path.exists('/usr/bin/cyberpanel_utility'):
-            command = 'wget -q -O /usr/bin/cyberpanel_utility https://cyberpanel.sh/misc/cyberpanel_utility.sh'
+            command = 'wget -q -O /usr/bin/cyberpanel_utility https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/cyberpanel_utility.sh'
             ProcessUtilities.executioner(command)
 
             command = 'chmod 700 /usr/bin/cyberpanel_utility'
@@ -1340,7 +1340,7 @@ def main():
         ProcessUtilities.executioner(command)
     elif args.function == 'help':
         if not os.path.exists('/usr/bin/cyberpanel_utility'):
-            command = 'wget -q -O /usr/bin/cyberpanel_utility https://cyberpanel.sh/misc/cyberpanel_utility.sh'
+            command = 'wget -q -O /usr/bin/cyberpanel_utility https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/cyberpanel_utility.sh'
             ProcessUtilities.executioner(command)
 
             command = 'chmod 700 /usr/bin/cyberpanel_utility'

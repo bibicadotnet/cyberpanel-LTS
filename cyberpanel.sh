@@ -23,7 +23,6 @@
 #Check_Provider() ---> check the provider, certain provider like Alibaba or Tencent Yun may need some special change
 #Check_Argument() ---> parse argument and go to Argument_Mode() or Interactive_Mode() respectively
 #Pre_Install_Setup_Repository() ---> setup/install repositories for centos system.
-#go to Pre_Install_Setup_CN_Repository() if server is within China.
 #Pre_Install_Setup_Git_URL() --->  form up github URL , use Gitee for servers within China.
 #Pre_Install_Required_Components() --->  install required softwares and git clone it
 #Pre_Install_System_Tweak() ---> set up SWAP and apply some system tweak depends on providers
@@ -94,7 +93,7 @@ Git_User=""
 Git_Content_URL=""
 Git_Clone_URL=""
 
-LSWS_Latest_URL="https://cyberpanel.sh/update.litespeedtech.com/ws/latest.php"
+LSWS_Latest_URL="https://update.litespeedtech.com/ws/latest.php"
 LSWS_Tmp=$(curl --silent --max-time 30 -4 "$LSWS_Latest_URL")
 LSWS_Stable_Line=$(echo "$LSWS_Tmp" | grep "LSWS_STABLE")
 LSWS_Stable_Version=$(expr "$LSWS_Stable_Line" : '.*LSWS_STABLE=\(.*\) BUILD .*')
@@ -113,7 +112,6 @@ echo -e "\n${1}=${2}\n" >> "/var/log/cyberpanel_debug_$(date +"%Y-%m-%d")_${Rand
 Debug_Log2() {
 Check_Server_IP "$@" >/dev/null 2>&1
 echo -e "\n${1}" >> /var/log/installLogs.txt
-curl --max-time 20 -d '{"ipAddress": "'"$Server_IP"'", "InstallCyberPanelStatus": "'"$1"'"}' -H "Content-Type: application/json" -X POST https://cloud.cyberpanel.net/servers/RecvData  >/dev/null 2>&1
 }
 
 Branch_Check() {
@@ -193,8 +191,8 @@ echo -e "\nChecking root privileges..."
 
   if [[ $(id -u) != 0 ]] >/dev/null; then
     echo -e "\nYou must run on root user to install CyberPanel...\n"
-    echo -e "or run following command: (do NOT miss the quotes)"
-    echo -e "\e[31msudo su -c \"sh <(curl https://cyberpanel.sh || wget -O - https://cyberpanel.sh)\"\e[39m"
+    echo -e "or run following command: "
+    echo -e "sudo su - "
     exit 1
   else
     echo -e "\nYou are runing as root...\n"
@@ -202,7 +200,7 @@ echo -e "\nChecking root privileges..."
 }
 
 Check_Server_IP() {
-Server_IP=$(curl --silent --max-time 30 -4 https://cyberpanel.sh/?ip)
+Server_IP=$(curl --silent --max-time 30 -4 https://ipv4.wtfismyip.com/text)
   if [[ $Server_IP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     echo -e "Valid IP detected..."
   else
@@ -213,29 +211,15 @@ Server_IP=$(curl --silent --max-time 30 -4 https://cyberpanel.sh/?ip)
 
 echo -e "\nChecking server location...\n"
 
-if [[ "$Server_Country" != "CN" ]] ; then
-  Server_Country=$(curl --silent --max-time 10 -4 https://cyberpanel.sh/?country)
+  Server_Country=$(curl --silent https://ipinfo.io/$Server_IP/country)
   if [[ ${#Server_Country} != "2" ]] ; then
    Server_Country="Unknow"
   fi
-fi
-#to avoid repeated check_ip called by debug_log2 to break force mirror for CN servers.
 
 if [[ "$Debug" = "On" ]] ; then
   Debug_Log "Server_IP" "$Server_IP"
   Debug_Log "Server_Country" "$Server_Country"
 fi
-
-if [[ "$*" = *"--mirror"* ]] ; then
-  Server_Country="CN"
-  echo -e "Force to use mirror server due to --mirror argument...\n"
-fi
-
-if [[ "$Server_Country" = *"CN"* ]] ; then
-  Server_Country="CN"
-  echo -e "Setting up to use mirror server...\n"
-fi
-}
 
 Check_OS() {
 if [[ ! -f /etc/os-release ]] ; then
@@ -382,12 +366,8 @@ if hash dmidecode >/dev/null 2>&1; then
     Server_Provider="Google Cloud Platform"
   elif [[ "$(dmidecode -s bios-vendor)" = "DigitalOcean" ]]; then
     Server_Provider="Digital Ocean"
-  elif [[ "$(dmidecode -s system-product-name | cut -c 1-7)" = "Alibaba" ]]; then
-    Server_Provider="Alibaba Cloud"
   elif [[ "$(dmidecode -s system-manufacturer)" = "Microsoft Corporation" ]]; then
     Server_Provider="Microsoft Azure"
-  elif [[ -d /usr/local/qcloud ]]; then
-    Server_Provider="Tencent Cloud"
   else
     Server_Provider="Undefined"
   fi
@@ -822,7 +802,7 @@ License_Check "$License_Key"
 
 Pre_Install_Setup_Repository() {
 if [[ $Server_OS = "CentOS" ]] ; then
-  rpm --import https://cyberpanel.sh/rpms.litespeedtech.com/centos/RPM-GPG-KEY-litespeed
+  rpm --import https://rpms.litespeedtech.com/centos/RPM-GPG-KEY-litespeed
   #import the LiteSpeed GPG key
 
   yum clean all
@@ -837,9 +817,9 @@ if [[ $Server_OS = "CentOS" ]] ; then
 
 
   if [[ "$Server_OS_Version" = "8" ]]; then
-    rpm --import https://cyberpanel.sh/www.centos.org/keys/RPM-GPG-KEY-CentOS-Official
-    rpm --import https://cyberpanel.sh/dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-8
-    yum install -y https://cyberpanel.sh/dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official
+    rpm --import https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-8
+    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
       Check_Return "yum repo" "no_exit"
 
     sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* > /dev/null 2>&1
@@ -861,13 +841,13 @@ if [[ $Server_OS = "CentOS" ]] ; then
   fi
 
   if [[ "$Server_OS_Version" = "7" ]]; then
-    rpm --import https://cyberpanel.sh/dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+    rpm --import https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
     yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
       Check_Return "yum repo" "no_exit"
 
     yum install -y yum-plugin-priorities
       Check_Return "yum repo" "no_exit"
-    curl -o /etc/yum.repos.d/powerdns-auth-43.repo https://cyberpanel.sh/repo.powerdns.com/repo-files/centos-auth-43.repo
+    curl -o /etc/yum.repos.d/powerdns-auth-43.repo https://repo.powerdns.com/repo-files/centos-auth-43.repo
       Check_Return "yum repo" "no_exit"
 
     cat <<EOF >/etc/yum.repos.d/MariaDB.repo
@@ -880,82 +860,18 @@ gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
 EOF
 
-    yum install --nogpg -y https://cyberpanel.sh/mirror.ghettoforge.org/distributions/gf/gf-release-latest.gf.el7.noarch.rpm
+    yum install --nogpg -y https://mirror.ghettoforge.org/distributions/gf/gf-release-latest.gf.el7.noarch.rpm
       Check_Return "yum repo" "no_exit"
 
-    rpm -ivh https://cyberpanel.sh/repo.iotti.biz/CentOS/7/noarch/lux-release-7-1.noarch.rpm
+    rpm -ivh https://repo.iotti.biz/CentOS/7/noarch/lux-release-7-1.noarch.rpm
       Check_Return "yum repo" "no_exit"
 
-    rpm -ivh https://cyberpanel.sh/repo.ius.io/ius-release-el7.rpm
+    rpm -ivh https://repo.ius.io/ius-release-el7.rpm
       Check_Return "yum repo" "no_exit"
   fi
 fi
 Debug_Log2 "Setting up repositories...,1"
 
-if [[ "$Server_Country" = "CN" ]] ; then
-  Pre_Install_Setup_CN_Repository
-  Debug_Log2 "Setting up repositories for CN server...,1"
-fi
-
-if [[ "$Server_Country" = "CN" ]] || [[ "$Server_Provider" = "Alibaba Cloud" ]] || [[ "$Server_Provider" = "Tencent Cloud" ]]; then
-  Setup_Pip
-fi
-
-}
-
-Setup_Pip() {
-
-rm -rf /root/.pip
-mkdir -p /root/.pip
-cat <<EOF >/root/.pip/pip.conf
-[global]
-index-url=https://cyberpanel.sh/pip-repo/pypi/simple/
-EOF
-#default to self-host pip for CN
-
-if [[ "$Server_Provider" = "Alibaba Cloud" ]] ; then
-sed -i 's|https://cyberpanel.sh/pip-repo/pypi/simple/|http://mirrors.cloud.aliyuncs.com/pypi/simple/|g' /root/.pip/pip.conf
-echo "trusted-host = mirrors.cloud.aliyuncs.com" >> /root/.pip/pip.conf
-fi
-
-if [[ "$Server_Provider" = "Tencent Cloud" ]] ; then
-sed -i 's|https://cyberpanel.sh/pip-repo/pypi/simple/|https://mirrors.cloud.tencent.com/pypi/simple/|g' /root/.pip/pip.conf
-fi
-#set Alibaba and Tencent to their private mirror
-
-
-Debug_Log2 "Setting up PIP repo...,3"
-#set up pip for Alibaba, Tencent worldwide and Chinese server
-
-if [[ "$Debug" = "On" ]] ; then
-  Debug_Log "Pip Source" "$(grep "index-url" /root/.pip/pip.conf)"
-fi
-}
-
-Pre_Install_Setup_CN_Repository() {
-if [[ "$Server_OS" = "CentOS" ]] && [[ "$Server_OS_Version" = "7" ]]; then
-
-  sed -i 's|http://yum.mariadb.org|https://cyberpanel.sh/yum.mariadb.org|g' /etc/yum.repos.d/MariaDB.repo
-  sed -i 's|https://yum.mariadb.org/RPM-GPG-KEY-MariaDB|https://cyberpanel.sh/yum.mariadb.org/RPM-GPG-KEY-MariaDB|g' /etc/yum.repos.d/MariaDB.repo
-  # use MariaDB Mirror
-
-  sed -i 's|https://download.copr.fedorainfracloud.org|https://cyberpanel.sh/download.copr.fedorainfracloud.org|g' /etc/yum.repos.d/_copr_copart-restic.repo
-
-  sed -i 's|http://repo.iotti.biz|https://cyberpanel.sh/repo.iotti.biz|g' /etc/yum.repos.d/frank.repo
-
-  sed -i "s|mirrorlist=http://mirrorlist.ghettoforge.org/el/7/gf/\$basearch/mirrorlist|baseurl=https://cyberpanel.sh/mirror.ghettoforge.org/distributions/gf/el/7/gf/x86_64/|g" /etc/yum.repos.d/gf.repo
-  sed -i "s|mirrorlist=http://mirrorlist.ghettoforge.org/el/7/plus/\$basearch/mirrorlist|baseurl=https://cyberpanel.sh/mirror.ghettoforge.org/distributions/gf/el/7/plus/x86_64/|g" /etc/yum.repos.d/gf.repo
-
-  sed -i 's|https://repo.ius.io|https://cyberpanel.sh/repo.ius.io|g' /etc/yum.repos.d/ius.repo
-
-  sed -i 's|http://repo.iotti.biz|https://cyberpanel.sh/repo.iotti.biz|g' /etc/yum.repos.d/lux.repo
-
-  sed -i 's|http://repo.powerdns.com|https://cyberpanel.sh/repo.powerdns.com|g' /etc/yum.repos.d/powerdns-auth-43.repo
-  sed -i 's|https://repo.powerdns.com|https://cyberpanel.sh/repo.powerdns.com|g' /etc/yum.repos.d/powerdns-auth-43.repo
-fi
-#  sed -i 's|http://mirrors.tencentyun.com/ubuntu/|https://cyberpanel.sh/us.archive.ubuntu.com/ubuntu/|g' /etc/apt/sources.list
-
-Debug_Log2 "Setting up repositories for CN server...,1"
 }
 
 Download_Requirement() {
@@ -994,9 +910,6 @@ if [[ "$Server_OS" = "CentOS" ]] ; then
 else
   apt update -y
   DEBIAN_FRONTEND=noninteractive apt upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
-	if [[ "$Server_Provider" = "Alibaba Cloud" ]] ; then
-    apt install -y --allow-downgrades libgnutls30=3.6.13-2ubuntu1.3
-  fi
 
   if [[ "$Server_OS_Version" = "22" ]] ; then
     DEBIAN_FRONTEND=noninteracitve apt install -y dnsutils net-tools htop telnet libcurl4-gnutls-dev libgnutls28-dev libgcrypt20-dev libattr1 libattr1-dev liblzma-dev libgpgme-dev libcurl4-gnutls-dev libssl-dev nghttp2 libnghttp2-dev idn2 libidn2-dev libidn2-0-dev librtmp-dev libpsl-dev nettle-dev libgnutls28-dev libldap2-dev libgssapi-krb5-2 libk5crypto3 libkrb5-dev libcomerr2 libldap2-dev virtualenv git socat vim unzip zip libmariadb-dev-compat libmariadb-dev
@@ -1102,11 +1015,7 @@ if [[ "$Server_OS" = "CentOS" ]] ; then
     #CentOS 7 specific change
     if [[ "$Server_OS_Version" = "8" ]] ; then
 	      if grep -q -E "Rocky Linux" /etc/os-release ; then
-        if [[ "$Server_Country" = "CN" ]] ; then
-          sed -i 's|rpm -Uvh http://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el8.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://cyberpanel.sh/litespeed/litespeed_cn.repo|g' install.py
-        else
           sed -i 's|rpm -Uvh http://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el8.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://cyberpanel.sh/litespeed/litespeed.repo|g' install.py
-        fi
       fi
     fi
     #CentOS 8 specific change
@@ -1183,12 +1092,6 @@ if ! grep -q "pid_max" /etc/rc.local 2>/dev/null ; then
     fi
   fi
 
-  if [[ "$Server_Provider" = "Tencent Cloud" ]] ; then
-    echo "$(host mirrors.tencentyun.com | awk '{print $4}') mirrors.tencentyun.com " >> /etc/hosts
-  fi
-  if [[ "$Server_Provider" = "Alibaba Cloud" ]] ; then
-    echo "$(host mirrors.cloud.aliyuncs.com | awk '{print $4}') mirrors.cloud.aliyuncs.com " >> /etc/hosts
-  fi
   #add internal repo server to host file before systemd-resolved is disabled
 
   if grep -i -q "systemd-resolve" /etc/resolv.conf ; then
@@ -1203,16 +1106,8 @@ if ! grep -q "pid_max" /etc/rc.local 2>/dev/null ; then
   # Delete resolv.conf file
   rm -f /etc/resolv.conf
 
-  if [[ "$Server_Provider" = "Tencent Cloud" ]] ; then
-    echo -e "nameserver 183.60.83.19" > /etc/resolv.conf
-    echo -e "nameserver 183.60.82.98" >> /etc/resolv.conf
-  elif [[ "$Server_Provider" = "Alibaba Cloud" ]] ; then
-    echo -e "nameserver 100.100.2.136" > /etc/resolv.conf
-    echo -e "nameserver 100.100.2.138" >> /etc/resolv.conf
-  else
-    echo -e "nameserver 1.1.1.1" > /etc/resolv.conf
-    echo -e "nameserver 8.8.8.8" >> /etc/resolv.conf
-  fi
+  echo -e "nameserver 1.1.1.1" > /etc/resolv.conf
+  echo -e "nameserver 8.8.8.8" >> /etc/resolv.conf
 
   systemctl restart systemd-networkd >/dev/null 2>&1
   sleep 3
@@ -1282,12 +1177,6 @@ cd "$Current_Dir" || exit
 rm -rf /root/cyberpanel-tmp
   #clean up the temp files
 }
-
-Pre_Install_CN_Replacement() {
-if [[ "$Server_OS" = "Ubuntu" ]] ; then
-  sed -i 's|wget http://rpms.litespeedtech.com/debian/|wget https://cyberpanel.sh/litespeed/|g' install.py
-  sed -i 's|https://repo.dovecot.org/|https://cyberpanel.sh/repo.dovecot.org/|g' install.py
-fi
   #replace litespeed repo on ubuntu 18/20
 
 if [[ "$Server_OS" = "CentOS" ]] ; then
@@ -1360,13 +1249,10 @@ if [[ $Server_Edition = "Enterprise" ]] ; then
   Enterprise_Flag="--ent ent --serial "
 fi
 
-sed -i 's|git clone https://github.com/usmannasir/cyberpanel|echo downloaded|g' install.py
+sed -i 's|git clone https://github.com/tbaldur/cyberpanel|echo downloaded|g' install.py
 sed -i 's|mirror.cyberpanel.net|cyberpanel.sh|g' install.py
 
 
-if [[ $Server_Country = "CN" ]] ; then
-  Pre_Install_CN_Replacement
-else
   sed -i 's|wget -O -  https://get.acme.sh \| sh|echo acme|g' install.py
   sed -i 's|/root/.acme.sh/acme.sh --upgrade --auto-upgrade|echo acme2|g' install.py
 
@@ -1379,7 +1265,6 @@ else
 
   Retry_Command "/root/.acme.sh/acme.sh --upgrade --auto-upgrade"
   #install acme and upgrade it beforehand, to prevent gitee fail
-fi
   #install acme.sh before main installation for issues #705 #707 #708 #709
 
 echo -e "Preparing...\n"
@@ -1640,7 +1525,7 @@ fi
 
 Post_Install_Setup_Utility() {
 if [[ ! -f /usr/bin/cyberpanel_utility ]]; then
-  wget -q -O /usr/bin/cyberpanel_utility https://cyberpanel.sh/misc/cyberpanel_utility.sh
+  wget -q -O /usr/bin/cyberpanel_utility https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/cyberpanel_utility.sh
   chmod 700 /usr/bin/cyberpanel_utility
 fi
 }
@@ -1780,15 +1665,10 @@ chown -R cyberpanel:cyberpanel /usr/local/CyberCP/lib64 || true
 }
 
 Pre_Install_Setup_Git_URL() {
-if [[ $Server_Country != "CN" ]] ; then
-  Git_User="usmannasir"
+
+  Git_User="tbaldur"
   Git_Content_URL="https://raw.githubusercontent.com/${Git_User}/cyberpanel"
   Git_Clone_URL="https://github.com/${Git_User}/cyberpanel.git"
-else
-  Git_User="qtwrk"
-  Git_Content_URL="https://gitee.com/${Git_User}/cyberpanel/raw"
-  Git_Clone_URL="https://gitee.com/${Git_User}/cyberpanel.git"
-fi
 
 if [[ "$Debug" = "On" ]] ; then
   Debug_Log "Git_URL" "$Git_Content_URL"
@@ -1811,7 +1691,7 @@ sed -i "s|lsws-5.3.5|lsws-$LSWS_Stable_Version|g" /usr/local/CyberCP/serverStatu
 
 
 if [[ ! -f /usr/bin/cyberpanel_utility ]]; then
-  wget -q -O /usr/bin/cyberpanel_utility https://cyberpanel.sh/misc/cyberpanel_utility.sh
+  wget -q -O /usr/bin/cyberpanel_utility https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/cyberpanel_utility.sh
   chmod 700 /usr/bin/cyberpanel_utility
 fi
 
@@ -1907,23 +1787,10 @@ echo -e "\nFinalizing...\n"
 echo -e "Cleaning up...\n"
 rm -rf /root/cyberpanel
 
-if [[ "$Server_Country" = "CN" ]] ; then
-Post_Install_CN_Replacement
-fi
-
 # If valid hostname is set that resolves externally we can issue an ssl. This will create the hostname as a website so we can issue the SSL and do our first login without SSL warnings or exceptions needed.
 HostName=$(hostname --fqdn); [ -n "$(dig @1.1.1.1 +short "$HostName")" ]  &&  echo "$HostName resolves to valid IP. Setting up hostname SSL" && cyberpanel createWebsite --package Default --owner admin --domainName $(hostname --fqdn) --email root@localhost --php 7.4 && cyberpanel hostNameSSL --domainName $(hostname --fqdn)
 
 
-}
-
-Post_Install_CN_Replacement() {
-sed -i 's|wp core download|wp core download https://cyberpanel.sh/wordpress.org/latest.tar.gz|g' /usr/local/CyberCP/plogical/applicationInstaller.py
-sed -i 's|https://raw.githubusercontent.com/|https://cyberpanel.sh/raw.githubusercontent.com/|g' /usr/local/CyberCP/plogical/applicationInstaller.py
-sed -i 's|wp plugin install litespeed-cache|wp plugin install  https://cyberpanel.sh/downloads.wordpress.org/plugin/litespeed-cache.zip|g' /usr/local/CyberCP/plogical/applicationInstaller.py
-
-sed -i 's|https://www.litespeedtech.com/|https://cyberpanel.sh/www.litespeedtech.com/|g' /usr/local/CyberCP/serverStatus/serverStatusUtil.py
-sed -i 's|http://license.litespeedtech.com/|https://cyberpanel.sh/license.litespeedtech.com/|g' /usr/local/CyberCP/serverStatus/serverStatusUtil.py
 }
 
 echo -e "\nInitializing...\n"

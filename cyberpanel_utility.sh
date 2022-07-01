@@ -4,8 +4,8 @@
 export LC_CTYPE=en_US.UTF-8
 SUDO_TEST=$(set)
 BRANCH_NAME="stable"
-GIT_URL="github.com/usmannasir/cyberpanel"
-GIT_CONTENT_URL="raw.githubusercontent.com/usmannasir/cyberpanel"
+GIT_URL="github.com/tbaldur/cyberpanel"
+GIT_CONTENT_URL="raw.githubusercontent.com/tbaldur/cyberpanel"
 
 check_OS() {
 	if [[ ! -f /etc/os-release ]] ; then
@@ -107,7 +107,7 @@ SUM1=${SUM:0:32}
 #get md5sum of local file
 
 rm -f /usr/local/CyberPanel/cyberpanel_utility.sh
-wget -q -O /usr/local/CyberPanel/cyberpanel_utility.sh https://cyberpanel.sh/misc/cyberpanel_utility.sh
+wget -q -O /usr/local/CyberPanel/cyberpanel_utility.sh https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/cyberpanel_utility.sh
 chmod 600 /usr/local/CyberPanel/cyberpanel_utility.sh
 
 
@@ -141,17 +141,12 @@ rm -f /usr/local/CyberPanel/cyberpanel_utility.sh
 
 cyberpanel_upgrade() {
 SERVER_COUNTRY="unknow"
-SERVER_COUNTRY=$(curl --silent --max-time 5 https://cyberpanel.sh/?country)
+SERVER_COUNTRY=$(curl --silent --max-time 10 -4 https://ipinfo.io/$(curl --silent --max-time 30 -4 https://ipv4.wtfismyip.com/text)/country)
 if [[ ${#SERVER_COUNTRY} == "2" ]] || [[ ${#SERVER_COUNTRY} == "6" ]] ; then
 	echo -e "\nChecking server..."
 else
 	echo -e "\nChecking server..."
 	SERVER_COUNTRY="unknow"
-fi
-
-if [[ $SERVER_COUNTRY == "CN" ]] ; then
-	GIT_URL="gitee.com/qtwrk/cyberpanel"
-	GIT_CONTENT_URL="gitee.com/qtwrk/cyberpanel/raw"
 fi
 
 #echo -e "CyberPanel Upgrade will start in 10 seconds"

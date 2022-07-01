@@ -67,7 +67,7 @@ rm -rf /root/cyberpanel-tmp
 special_change(){
 sed -i 's|cyberpanel.sh|'$DOWNLOAD_SERVER'|g' install.py
 sed -i 's|mirror.cyberpanel.net|'$DOWNLOAD_SERVER'|g' install.py
-sed -i 's|git clone https://github.com/usmannasir/cyberpanel|echo downloaded|g' install.py
+sed -i 's|git clone https://github.com/tbaldur/cyberpanel|echo downloaded|g' install.py
 #change to CDN first, regardless country
 sed -i 's|http://|https://|g' install.py
 
@@ -76,192 +76,6 @@ LATEST_URL="https://update.litespeedtech.com/ws/latest.php"
 curl --silent -o /tmp/lsws_latest $LATEST_URL 2>/dev/null
 LSWS_STABLE_LINE=`cat /tmp/lsws_latest | grep LSWS_STABLE`
 LSWS_STABLE_VER=`expr "$LSWS_STABLE_LINE" : '.*LSWS_STABLE=\(.*\) BUILD .*'`
-
-if [[ $SERVER_COUNTRY == "CN" ]] ; then
-#line1="$(grep -n "github.com/usmannasir/cyberpanel" install.py | head -n 1 | cut -d: -f1)"
-#line2=$((line1 - 1))
-#sed -i "${line2}i\ \ \ \ \ \ \ \ subprocess.call(command, shell=True)" install.py
-#sed -i "${line2}i\ \ \ \ \ \ \ \ command = 'tar xzvf cyberpanel-git.tar.gz'" install.py
-#sed -i "${line2}i\ \ \ \ \ \ \ \ subprocess.call(command, shell=True)" install.py
-#sed -i "${line2}i\ \ \ \ \ \ \ \ command = 'wget cyberpanel.sh/cyberpanel-git.tar.gz'" install.py
-sed -i 's|wget https://rpms.litespeedtech.com/debian/|wget --no-check-certificate https://rpms.litespeedtech.com/debian/|g' install.py
-sed -i 's|https://repo.powerdns.com/repo-files/centos-auth-42.repo|https://'$DOWNLOAD_SERVER'/powerdns/powerdns.repo|g' installCyberPanel.py
-sed -i 's|https://snappymail.eu/repository/latest.tar.gz|https://'$DOWNLOAD_SERVER'/repository/latest.tar.gz|g' install.py
-
-sed -i 's|rpm -ivh https://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el7.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://'$DOWNLOAD_SERVER'/litespeed/litespeed.repo|g' install.py
-
-
-sed -i 's|https://copr.fedorainfracloud.org/coprs/copart/restic/repo/epel-7/copart-restic-epel-7.repo|https://'$DOWNLOAD_SERVER'/restic/restic.repo|g' install.py
-
-sed -i 's|yum -y install https://cyberpanel.sh/gf-release-latest.gf.el7.noarch.rpm|wget -O /etc/yum.repos.d/gf.repo https://'$DOWNLOAD_SERVER'/gf-plus/gf.repo|g' install.py
-sed -i 's|dovecot-2.3-latest|dovecot-2.3-latest-mirror|g' install.py
-sed -i 's|git clone https://github.com/usmannasir/cyberpanel|wget https://cyberpanel.sh/cyberpanel-git.tar.gz \&\& tar xzvf cyberpanel-git.tar.gz|g' install.py
-sed -i 's|https://repo.dovecot.org/ce-2.3-latest/centos/$releasever/RPMS/$basearch|https://'$DOWNLOAD_SERVER'/dovecot/|g' install.py
-sed -i 's|'$DOWNLOAD_SERVER'|cyberpanel.sh|g' install.py
-sed -i 's|https://www.litespeedtech.com/packages/5.0/lsws-5.4.2-ent-x86_64-linux.tar.gz|https://'$DOWNLOAD_SERVER'/litespeed/lsws-'$LSWS_STABLE_VER'-ent-x86_64-linux.tar.gz|g' installCyberPanel.py
-# global change for CN , regardless provider and system
-
-	if [[ $SERVER_OS == "CentOS" ]] ; then
-		DIR=$(pwd)
-		cd $DIR/mysql
-		echo "[mariadb-tsinghua]
-name = MariaDB
-baseurl = https://mirrors.tuna.tsinghua.edu.cn/mariadb/yum/10.1/centos7-amd64
-gpgkey = https://mirrors.tuna.tsinghua.edu.cn/mariadb/yum//RPM-GPG-KEY-MariaDB
-gpgcheck = 1" > MariaDB.repo
-#above to set mariadb db to Tsinghua repo
-		cd $DIR
-		sed -i 's|https://www.litespeedtech.com/packages/5.0/lsws-5.3.5-ent-x86_64-linux.tar.gz|https://cyberpanel.sh/packages/5.0/lsws-5.3.5-ent-x86_64-linux.tar.gz|g' installCyberPanel.py
-		mkdir /root/.pip
-		cat << EOF > /root/.pip/pip.conf
-[global]
-index-url = https://mirrors.aliyun.com/pypi/simple/ 
-EOF
-		echo -e "\nSet to Aliyun pip repo..."
-		cat << EOF > composer.sh
-#!/usr/bin/env bash
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php composer-setup.php
-php -r "unlink('composer-setup.php');"
-mv composer.phar /usr/bin/composer
-
-if [ ! -d /root/.config ]; then
-mkdir /root/.config
-fi
-
-if [ ! -d /root/.config/composer ]; then
-mkdir /root/.config/composer
-fi
-
-echo '{
-    "bitbucket-oauth": {},
-    "github-oauth": {},
-    "gitlab-oauth": {},
-    "gitlab-token": {},
-    "http-basic": {}
-}
-' > /root/.config/composer/auth.json
-
-echo '{
-    "config": {},
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://mirrors.aliyun.com/composer/"
-        }
-    }
-}
-' > /root/.config/composer/config.json
-composer clear-cache
-EOF
-	fi
-
-
-	if [[ $SERVER_OS == "Ubuntu" ]] ; then
-		echo $'\n89.208.248.38 rpms.litespeedtech.com\n' >> /etc/hosts
-		echo -e "Mirror server set..."
-		pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
-		cat << EOF > /root/.pip/pip.conf
-[global]
-index-url = https://mirrors.aliyun.com/pypi/simple/ 
-EOF
-	echo -e "\nSet to Aliyun pip repo..."
-		if [[ $PROVIDER == "Tencent Cloud" ]] ; then
-		#tencent cloud and ubuntu system
-		echo -e "\n Tencent Cloud detected ... bypass default repository"
-		cp /etc/apt/sources.list /etc/apt/sources.list-backup
-		#backup original sources list
-		cat << 'EOF' > /etc/apt/sources.list
-deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
-EOF
-		DEBIAN_FRONTEND=noninteractive apt update -y
-		pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
-		cat << EOF > composer.sh
-#!/usr/bin/env bash
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php composer-setup.php
-php -r "unlink('composer-setup.php');"
-mv composer.phar /usr/bin/composer
-
-if [ ! -d /root/.config ]; then
-mkdir /root/.config
-fi
-
-if [ ! -d /root/.config/composer ]; then
-mkdir /root/.config/composer
-fi
-
-echo '{
-    "bitbucket-oauth": {},
-    "github-oauth": {},
-    "gitlab-oauth": {},
-    "gitlab-token": {},
-    "http-basic": {}
-}
-' > /root/.config/composer/auth.json
-
-echo '{
-    "config": {},
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://mirrors.cloud.tencent.com/composer/"
-        }
-    }
-}
-' > /root/.config/composer/config.json
-composer clear-cache
-EOF
-		else
-	cat << EOF > composer.sh
-#!/usr/bin/env bash
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php composer-setup.php
-php -r "unlink('composer-setup.php');"
-mv composer.phar /usr/bin/composer
-
-if [ ! -d /root/.config ]; then
-mkdir /root/.config
-fi
-
-if [ ! -d /root/.config/composer ]; then
-mkdir /root/.config/composer
-fi
-
-echo '{
-    "bitbucket-oauth": {},
-    "github-oauth": {},
-    "gitlab-oauth": {},
-    "gitlab-token": {},
-    "http-basic": {}
-}
-' > /root/.config/composer/auth.json
-
-echo '{
-    "config": {},
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://packagist.phpcomposer.com"
-        }
-    }
-}
-' > /root/.config/composer/config.json
-composer clear-cache
-EOF
-		fi
-	fi
-fi
-}
 
 
 system_tweak() {
@@ -451,12 +265,8 @@ if hash dmidecode > /dev/null 2>&1 ; then
 			PROVIDER='Google Cloud Platform'      
 		elif [ "$(dmidecode -s bios-vendor)" = 'DigitalOcean' ] ; then
 			PROVIDER='Digital Ocean'
-		elif [ "$(dmidecode -s system-product-name | cut -c 1-7)" = 'Alibaba' ] ; then
-			PROVIDER='Alibaba Cloud'
 		elif [ "$(dmidecode -s system-manufacturer)" = 'Microsoft Corporation' ] ; then    
 			PROVIDER='Microsoft Azure'
-		elif [ -d /usr/local/qcloud ] ; then
-			PROVIDER='Tencent Cloud'
 		else
 		PROVIDER='undefined' 
 		fi 
@@ -870,35 +680,23 @@ fi
 
 pip_virtualenv() {
 if [[ $DEV == "OFF" ]] ; then
-if [[ $SERVER_COUNTRY == "CN" ]] ; then
-	mkdir /root/.pip
-cat << EOF > /root/.pip/pip.conf
-[global]
-index-url = https://mirrors.aliyun.com/pypi/simple/ 
-EOF
-fi
-
-if [[ $PROVIDER == "Alibaba Cloud" ]] ; then
-	pip install --upgrade pip
-	pip install setuptools==40.8.0
-fi
 
 pip install virtualenv
 virtualenv --system-site-packages /usr/local/CyberPanel
 source /usr/local/CyberPanel/bin/activate
 rm -rf requirements.txt
-wget -O requirements.txt https://raw.githubusercontent.com/usmannasir/cyberpanel/1.8.0/requirments.txt
+wget -O requirements.txt https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/1.8.0/requirments.txt
 pip install --ignore-installed -r requirements.txt
 virtualenv --system-site-packages /usr/local/CyberPanel
 fi
 
 if [[ $DEV == "ON" ]] ; then
 	#install dev branch 
-	#wget https://raw.githubusercontent.com/usmannasir/cyberpanel/$BRANCH_NAME/requirments.txt
+	#wget https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/$BRANCH_NAME/requirments.txt
 	cd /usr/local/
 	python3.6 -m venv CyberPanel
 	source /usr/local/CyberPanel/bin/activate
-	wget -O requirements.txt https://raw.githubusercontent.com/usmannasir/cyberpanel/$BRANCH_NAME/requirments.txt
+	wget -O requirements.txt https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/$BRANCH_NAME/requirments.txt
 	pip3.6 install --ignore-installed -r requirements.txt
 fi
 
@@ -907,22 +705,15 @@ if [ -f requirements.txt ] && [ -d cyberpanel ] ; then
 	rm -f requirements.txt
 fi
 
-if [[ $SERVER_COUNTRY == "CN" ]] ; then
-	wget https://cyberpanel.sh/cyberpanel-git.tar.gz
-	tar xzvf cyberpanel-git.tar.gz > /dev/null
-	cp -r cyberpanel /usr/local/cyberpanel
-	cd cyberpanel/install
-else
-	if [[ $DEV == "ON" ]] ; then
-	git clone https://github.com/usmannasir/cyberpanel
+if [[ $DEV == "ON" ]] ; then
+	git clone https://github.com/tbaldur/cyberpanel
 	cd cyberpanel
 	git checkout $BRANCH_NAME
 	cd -
 	cd cyberpanel/install
 	else
-	git clone https://github.com/usmannasir/cyberpanel
+	git clone https://github.com/tbaldur/cyberpanel
 	cd cyberpanel/install
-	fi
 fi
 curl https://cyberpanel.sh/?version
 }
@@ -952,7 +743,7 @@ if grep "CyberPanel installation successfully completed" /var/log/installLogs.tx
 if [[ $DEV == "ON" ]] ; then
 python3.6 -m venv /usr/local/CyberCP
 source /usr/local/CyberCP/bin/activate
-wget -O requirements.txt https://raw.githubusercontent.com/usmannasir/cyberpanel/$BRANCH_NAME/requirments.txt
+wget -O requirements.txt https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/$BRANCH_NAME/requirments.txt
 pip3.6 install --ignore-installed -r requirements.txt
 systemctl restart lscpd
 fi
@@ -1031,9 +822,7 @@ if [[ $VERSION = "OLS" ]] ; then
 fi
 if [[ $VERSION = "ENT" ]] ; then
 	WORD="LiteSpeed Enterprise"
-	if [[ $SERVER_COUNTRY != "CN" ]] ; then
 		/usr/local/lsws/admin/misc/lsup.sh -f -v $LSWS_STABLE_VER
-	fi
 fi
 
 systemctl status lsws 2>&1>/dev/null
@@ -1086,26 +875,6 @@ fi
 	echo -e "\033[0;32mTCP: 21\033[39m and \033[0;32mTCP: 40110-40210\033[39m for FTP"
 	echo -e "\033[0;32mTCP: 25\033[39m, \033[0;32mTCP: 587\033[39m, \033[0;32mTCP: 465\033[39m, \033[0;32mTCP: 110\033[39m, \033[0;32mTCP: 143\033[39m and \033[0;32mTCP: 993\033[39m for mail service"
 	echo -e "\033[0;32mTCP: 53\033[39m and \033[0;32mUDP: 53\033[39m for DNS service"
-if [[ $SERVER_COUNTRY = CN ]] ; then
-	if [[ $PROVIDER == "Tencent Cloud" ]] ; then
-		if [[ $SERVER_OS == "Ubuntu" ]] ; then
-			rm -f /etc/apt/sources.list 
-			mv /etc/apt/sources.list-backup /etc/apt/sources.list
-echo > "nameserver 127.0.0.53
-options edns0" /run/systemd/resolve/stub-resolv.conf
-echo > "nameserver 127.0.0.53
-options edns0" /etc/resolv.conf
-			apt update
-#revert the previous change on tencent cloud repo.
-		fi
-	fi
-	if [[ $VERSION = "ENT" ]] ; then
-		sed -i 's|https://www.litespeedtech.com/packages/5.0/lsws-5.3.5-ent-x86_64-linux.tar.gz|https://cyberpanel.sh/packages/5.0/lsws-5.3.5-ent-x86_64-linux.tar.gz|g' /usr/local/CyberCP/install/installCyberPanel.py
-		sed -i 's|https://www.litespeedtech.com/packages/5.0/lsws-5.3.8-ent-x86_64-linux.tar.gz|https://cyberpanel.sh/packages/5.0/lsws-5.3.8-ent-x86_64-linux.tar.gz|g' /usr/local/CyberCP/serverStatus/serverStatusUtil.py
-		sed -i 's|https://www.litespeedtech.com/packages/5.0/lsws-5.3.8-ent-x86_64-linux.tar.gz|https://'$DOWNLOAD_SERVER'/litespeed/lsws-'$LSWS_STABLE_VER'-ent-x86_64-linux.tar.gz|g' /usr/local/CyberCP/serverStatus/serverStatusUtil.py
-		echo -e "If you have install LiteSpeed Enterprise, please run \e[31m/usr/local/lsws/admin/misc/lsup.sh\033[39m to update it to latest."
-	fi
-fi
 
 sed -i 's|lsws-5.3.8|lsws-'$LSWS_STABLE_VER'|g' /usr/local/CyberCP/serverStatus/serverStatusUtil.py
 sed -i 's|lsws-5.4.2|lsws-'$LSWS_STABLE_VER'|g' /usr/local/CyberCP/serverStatus/serverStatusUtil.py
@@ -1124,8 +893,6 @@ fi
 
 exit
 fi
-#replace URL for CN
-
 
 
 else
@@ -1241,7 +1008,7 @@ fi
 
 
 
-SERVER_IP=$(curl --silent --max-time 10 -4 https://cyberpanel.sh/?ip)
+SERVER_IP=$(curl --silent --max-time 30 -4 https://ipv4.wtfismyip.com/text)
 if [[ $SERVER_IP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
 	echo -e "Valid IP detected..."
 else
@@ -1249,20 +1016,15 @@ else
 	exit
 fi
 SERVER_COUNTRY="unknow"
-SERVER_COUNTRY=$(curl --silent --max-time 5 https://cyberpanel.sh/?country)
+SERVER_COUNTRY=$(curl --silent --max-time 10 -4 https://ipinfo.io/$SERVER_IP/country)
 if [[ ${#SERVER_COUNTRY} == "2" ]] || [[ ${#SERVER_COUNTRY} == "6" ]] ; then
 	echo -e "\nChecking server..."
 	else
 	echo -e "\nChecking server..."
 	SERVER_COUNTRY="unknow"
 fi
-#SERVER_COUNTRY="CN"
 #test string
-if [[ $SERVER_COUNTRY == "CN" ]] ; then
-DOWNLOAD_SERVER="cyberpanel.sh"
-else
 DOWNLOAD_SERVER="cdn.cyberpanel.sh"
-fi
 
 check_OS
 check_root

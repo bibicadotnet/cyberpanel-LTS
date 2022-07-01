@@ -100,7 +100,7 @@ def getLoadAverage(request):
 def versionManagment(request):
     ## Get latest version
 
-    getVersion = requests.get('https://cyberpanel.net/version.txt')
+    getVersion = requests.get('https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/version.txt')
     latest = getVersion.json()
     latestVersion = latest['version']
     latestBuild = latest['build']
@@ -110,7 +110,7 @@ def versionManagment(request):
     currentVersion = VERSION
     currentBuild = str(BUILD)
 
-    u = "https://api.github.com/repos/usmannasir/cyberpanel/commits?sha=v%s.%s" % (latestVersion, latestBuild)
+    u = "https://api.github.com/repos/tbaldur/cyberpanel-LTS/commits?sha=v%s.%s" % (latestVersion, latestBuild)
     logging.CyberCPLogFileWriter.writeToFile(u)
     r = requests.get(u)
     latestcomit = r.json()[0]['sha']
