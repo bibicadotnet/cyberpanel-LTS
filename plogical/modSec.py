@@ -16,7 +16,6 @@ class modSec:
 
     installLogPath = "/home/cyberpanel/modSecInstallLog"
     tempRulesFile = "/home/cyberpanel/tempModSecRules"
-    mirrorPath = "cyberpanel.net"
 
     @staticmethod
     def installModSec():
@@ -235,7 +234,7 @@ modsecurity_rules_file /usr/local/lsws/conf/modsec/rules.conf
                 if os.path.exists('comodo.tar.gz'):
                     os.remove('comodo.tar.gz')
 
-                command = "wget https://" + modSec.mirrorPath + "/modsec/comodo.tar.gz"
+                command = "wget https://github.com/tbaldur/cyberpanel-LTS/raw/stable/modsec_rules/comodo.tar.gz"
                 result = subprocess.call(shlex.split(command))
 
                 if result == 1:

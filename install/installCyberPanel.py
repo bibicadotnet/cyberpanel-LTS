@@ -354,10 +354,10 @@ class InstallCyberPanel:
             os.system(command)
 
             if get_Ubuntu_release() == 18.10:
-                command = 'wget https://rep.cyberpanel.net/pure-ftpd-common_1.0.47-3_all.deb'
+                command = 'wget https://github.com/tbaldur/cyberpanel-LTS/raw/stable/rpms/pure-ftpd-common_1.0.47-3_all.deb'
                 install.preFlightsChecks.call(command, self.distro, command, command, 1, 1, os.EX_OSERR)
 
-                command = 'wget https://rep.cyberpanel.net/pure-ftpd-mysql_1.0.47-3_amd64.deb'
+                command = 'wget https://github.com/tbaldur/cyberpanel-LTS/raw/stable/rpms/pure-ftpd-mysql_1.0.47-3_amd64.deb'
                 install.preFlightsChecks.call(command, self.distro, command, command, 1, 1, os.EX_OSERR)
 
                 command = 'dpkg --install --force-confold pure-ftpd-common_1.0.47-3_all.deb'

@@ -299,10 +299,10 @@ class FTPManager:
             os.system(command)
 
             if ProcessUtilities.decideDistro() != ProcessUtilities.ubuntu20:
-                command = 'wget https://rep.cyberpanel.net/pure-ftpd-common_1.0.47-3_all.deb'
+                command = 'wget https://github.com/tbaldur/cyberpanel-LTS/raw/stable/rpms/pure-ftpd-common_1.0.47-3_all.deb'
                 ProcessUtilities.executioner(command)
 
-                command = 'wget https://rep.cyberpanel.net/pure-ftpd-mysql_1.0.47-3_amd64.deb'
+                command = 'wget https://github.com/tbaldur/cyberpanel-LTS/raw/stable/rpms/pure-ftpd-mysql_1.0.47-3_amd64.deb'
                 ProcessUtilities.executioner(command)
 
                 command = 'dpkg --install --force-confold pure-ftpd-common_1.0.47-3_all.deb'

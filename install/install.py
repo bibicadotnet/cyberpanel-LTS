@@ -94,8 +94,6 @@ def get_Ubuntu_release():
 
 class preFlightsChecks:
     debug = 1
-    cyberPanelMirror = "mirror.cyberpanel.net/pip"
-    cdn = 'cyberpanel.sh'
     SnappyVersion = '2.15.3'
 
     def __init__(self, rootPath, ip, path, cwd, cyberPanelPath, distro, remotemysql=None, mysqlhost=None, mysqldb=None,
@@ -373,7 +371,7 @@ class preFlightsChecks:
 
         os.chdir('/usr/local')
 
-        command = "git clone https://github.com/tbaldur/cyberpanel"
+        command = "git clone https://github.com/tbaldur/cyberpanel-LTS"
         preFlightsChecks.call(command, self.distro, command, command, 1, 1, os.EX_OSERR)
 
         shutil.move('cyberpanel', 'CyberCP')
@@ -718,7 +716,7 @@ password="%s"
             if not os.path.exists("/usr/local/CyberCP/public"):
                 os.mkdir("/usr/local/CyberCP/public")
 
-            command = 'wget -O /usr/local/CyberCP/public/phpmyadmin.zip https://github.com/tbaldur/cyberpanel-LTS/raw/stable/phpmyadmin.zip'
+            command = 'wget -O /usr/local/CyberCP/public/phpmyadmin.zip https://github.com/tbaldur/cyberpanel-LTS-LTS/raw/stable/phpmyadmin.zip'
 
             preFlightsChecks.call(command, self.distro, '[download_install_phpmyadmin]',
                                   command, 1, 0, os.EX_OSERR)
@@ -1512,7 +1510,7 @@ autocreate_system_folders = On
             except:
                 pass
 
-            command = "wget https://cyberpanel.net/modsec/comodo.tar.gz"
+            command = "wget https://github.com/tbaldur/cyberpanel-LTS/raw/stable/modsec_rules/comodo.tar.gz"
             preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
 
             command = "tar -zxf comodo.tar.gz -C /usr/local/lscp/modsec"
@@ -1799,7 +1797,7 @@ autocreate_system_folders = On
     def test_Requests(self):
         try:
             import requests
-            getVersion = requests.get('https://cyberpanel.net/version.txt')
+            getVersion = requests.get('https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/version.txt')
             latest = getVersion.json()
         except BaseException as msg:
 
@@ -1809,10 +1807,10 @@ autocreate_system_folders = On
             command = "pip uninstall --yes requests"
             preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
 
-            command = "pip install http://mirror.cyberpanel.net/urllib3-1.22.tar.gz"
+            command = "pip install https://github.com/tbaldur/cyberpanel-LTS/raw/stable/pip/urllib3-1.22.tar.gz"
             preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
 
-            command = "pip install http://mirror.cyberpanel.net/requests-2.18.4.tar.gz"
+            command = "pip install https://github.com/tbaldur/cyberpanel-LTS/raw/stable/pip/requests-2.18.4.tar.gz"
             preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
 
     def installation_successfull(self):

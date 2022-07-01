@@ -25,7 +25,7 @@ Server_OS=""
 Server_OS_Version=""
 Server_Provider='Undefined'
 
-Temp_Value=$(curl --silent --max-time 30 -4 https://cyberpanel.net/version.txt)
+Temp_Value=$(curl --silent --max-time 30 -4 https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/version.txt)
 Panel_Version=${Temp_Value:12:3}
 Panel_Build=${Temp_Value:25:1}
 
@@ -40,7 +40,7 @@ MySQL_Version=$(mysql -V | grep -P '\d+.\d+.\d+' -o)
 MySQL_Password=$(cat /etc/cyberpanel/mysqlPassword)
 
 
-LSWS_Latest_URL="https://cyberpanel.sh/update.litespeedtech.com/ws/latest.php"
+LSWS_Latest_URL="https://update.litespeedtech.com/ws/latest.php"
 LSWS_Tmp=$(curl --silent --max-time 30 -4 "$LSWS_Latest_URL")
 LSWS_Stable_Line=$(echo "$LSWS_Tmp" | grep "LSWS_STABLE")
 LSWS_Stable_Version=$(expr "$LSWS_Stable_Line" : '.*LSWS_STABLE=\(.*\) BUILD .*')
@@ -255,8 +255,8 @@ fi
 
 Pre_Upgrade_Setup_Git_URL() {
     Git_User="tbaldur"
-    Git_Content_URL="https://raw.githubusercontent.com/${Git_User}/cyberpanel"
-    Git_Clone_URL="https://github.com/${Git_User}/cyberpanel.git"
+    Git_Content_URL="https://raw.githubusercontent.com/${Git_User}/cyberpanel-LTS"
+    Git_Clone_URL="https://github.com/${Git_User}/cyberpanel-LTS.git"
 
   if [[ "$Debug" = "On" ]] ; then
     Debug_Log "Git_URL" "$Git_Content_URL"
@@ -290,7 +290,8 @@ Pre_Upgrade_Setup_Repository() {
 if [[ "$Server_OS" = "CentOS" ]] ; then
   rm -f /etc/yum.repos.d/CyberPanel.repo
   rm -f /etc/yum.repos.d/litespeed.repo
-    curl -o /etc/yum.repos.d/litespeed.repo https://cyberpanel.sh/litespeed/litespeed.repo
+  curl -o /etc/yum.repos.d/litespeed.repo https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/litespeed.repo
+  sed -i '/failovermethod=priority/d' /etc/yum.repos.d/litespeed.repo
   yum clean all
   yum update -y
   yum autoremove epel-release -y
@@ -328,7 +329,7 @@ if [[ "$Server_OS" = "CentOS" ]] ; then
 
     yum clean all
 
-    curl -o /etc/yum.repos.d/powerdns-auth-43.repo https://cyberpanel.sh/repo.powerdns.com/repo-files/centos-auth-43.repo
+    curl -o /etc/yum.repos.d/powerdns-auth-43.repo https://repo.powerdns.com/repo-files/centos-auth-43.repo
       Check_Return "yum repo" "no_exit"
 
     cat << EOF > /etc/yum.repos.d/MariaDB.repo
@@ -343,7 +344,7 @@ EOF
 
     yum install yum-plugin-copr -y
     yum copr enable copart/restic -y
-    rpm -ivh https://cyberpanel.sh/repo.ius.io/ius-release-el7.rpm
+    rpm -ivh https://repo.ius.io/ius-release-el7.rpm
 
     yum install yum-plugin-priorities -y
 
@@ -476,8 +477,8 @@ wget "${Git_Content_URL}/${Branch_Name}/plogical/upgrade.py"
 
 Pre_Upgrade_Setup_Git_URL() {
   Git_User="tbaldur"
-  Git_Content_URL="https://raw.githubusercontent.com/${Git_User}/cyberpanel"
-  Git_Clone_URL="https://github.com/${Git_User}/cyberpanel.git"
+  Git_Content_URL="https://raw.githubusercontent.com/${Git_User}/cyberpanel-LTS"
+  Git_Clone_URL="https://github.com/${Git_User}/cyberpanel-LTS.git"
 
 if [[ "$Debug" = "On" ]] ; then
   Debug_Log "Git_URL" "$Git_Content_URL"
@@ -530,7 +531,7 @@ else
     Check_Return
 fi
 
-wget https://cyberpanel.sh/www.litespeedtech.com/packages/lsapi/wsgi-lsapi-1.7.tgz
+wget https://www.litespeedtech.com/packages/lsapi/wsgi-lsapi-1.7.tgz
 tar xf wsgi-lsapi-1.7.tgz
 cd wsgi-lsapi-1.7 || exit
 /usr/local/CyberPanel/bin/python ./configure.py
@@ -555,8 +556,8 @@ Post_Upgrade_System_Tweak() {
         if yum list installed libzip-devel >/dev/null 2>&1 ; then
           yum remove -y libzip-devel
         fi
-        yum install -y https://cyberpanel.sh/misc/libzip-0.11.2-6.el7.psychotic.x86_64.rpm
-        yum install -y https://cyberpanel.sh/misc/libzip-devel-0.11.2-6.el7.psychotic.x86_64.rpm
+        yum install -y https://github.com/tbaldur/cyberpanel-LTS/raw/stable/rpms/libzip-0.11.2-6.el7.psychotic.x86_64.rpm
+        yum install -y https://github.com/tbaldur/cyberpanel-LTS/raw/stable/rpms/libzip-devel-0.11.2-6.el7.psychotic.x86_64.rpm
         yum install lsphp74-devel
         if [[ ! -d /usr/local/lsws/lsphp74/tmp ]]; then
           mkdir /usr/local/lsws/lsphp74/tmp

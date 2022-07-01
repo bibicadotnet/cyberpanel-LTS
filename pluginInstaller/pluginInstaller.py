@@ -11,7 +11,6 @@ from plogical.processUtilities import ProcessUtilities
 class pluginInstaller:
     installLogPath = "/home/cyberpanel/modSecInstallLog"
     tempRulesFile = "/home/cyberpanel/tempModSecRules"
-    mirrorPath = "cyberpanel.net"
 
     @staticmethod
     def stdOut(message):

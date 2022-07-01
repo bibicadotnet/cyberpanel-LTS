@@ -163,7 +163,7 @@ exit
 
 show_help() {
 echo -e "\nFetching information...\n"
-curl --silent https://cyberpanel.sh/misc/faq.sh | sudo -u nobody bash | less -r
+curl --silent https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/faq.sh | sudo -u nobody bash | less -r
 exit
 }
 
@@ -289,7 +289,7 @@ read TMP_YN
 			elif [[ $SERVER_OS == "Ubuntu" ]] ; then
 				DEBIAN_FRONTEND=noninteractive apt install build-essential zlib1g-dev libexpat1-dev openssl libssl-dev libsasl2-dev libpcre3-dev git -y
 			fi
-				wget https://cdn.cyberpanel.sh/litespeed/lsmcd.tar.gz
+				wget https://github.com/tbaldur/cyberpanel-LTS/raw/stable/lsmcd.tar.gz
 				tar xzvf lsmcd.tar.gz
 				DIR=$(pwd)
 				cd $DIR/lsmcd

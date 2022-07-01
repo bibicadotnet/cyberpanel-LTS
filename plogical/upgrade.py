@@ -29,7 +29,6 @@ CloudLinux8 = 5
 
 class Upgrade:
     logPath = "/usr/local/lscp/logs/upgradeLog"
-    cdn = 'cdn.cyberpanel.sh'
     installedOutput = ''
     CentOSPath = '/etc/redhat-release'
     UbuntuPath = '/etc/lsb-release'
@@ -122,32 +121,6 @@ class Upgrade:
             return True
         except:
             return False
-
-    @staticmethod
-    def updateRepoURL():
-        command = "sed -i 's|sgp.cyberpanel.sh|cdn.cyberpanel.sh|g' /etc/yum.repos.d/MariaDB.repo"
-        Upgrade.executioner(command, command, 0)
-
-        command = "sed -i 's|lax.cyberpanel.sh|cdn.cyberpanel.sh|g' /etc/yum.repos.d/MariaDB.repo"
-        Upgrade.executioner(command, command, 0)
-
-        command = "sed -i 's|fra.cyberpanel.sh|cdn.cyberpanel.sh|g' /etc/yum.repos.d/MariaDB.repo"
-        Upgrade.executioner(command, command, 0)
-
-        command = "sed -i 's|mirror.cyberpanel.net|cdn.cyberpanel.sh|g' /etc/yum.repos.d/MariaDB.repo"
-        Upgrade.executioner(command, command, 0)
-
-        command = "sed -i 's|sgp.cyberpanel.sh|cdn.cyberpanel.sh|g' /etc/yum.repos.d/litespeed.repo"
-        Upgrade.executioner(command, command, 0)
-
-        command = "sed -i 's|lax.cyberpanel.sh|cdn.cyberpanel.sh|g' /etc/yum.repos.d/litespeed.repo"
-        Upgrade.executioner(command, command, 0)
-
-        command = "sed -i 's|fra.cyberpanel.sh|cdn.cyberpanel.sh|g' /etc/yum.repos.d/litespeed.repo"
-        Upgrade.executioner(command, command, 0)
-
-        command = "sed -i 's|mirror.cyberpanel.net|cdn.cyberpanel.sh|g' /etc/yum.repos.d/litespeed.repo"
-        Upgrade.executioner(command, command, 0)
 
     @staticmethod
     def mountTemp():
@@ -273,7 +246,7 @@ class Upgrade:
             except:
                 pass
 
-            command = 'wget -O /usr/local/CyberCP/public/phpmyadmin.zip https://github.com/tbaldur/cyberpanel-LTS/raw/stable/phpmyadmin.zip'
+            command = 'wget -O /usr/local/CyberCP/public/phpmyadmin.zip https://github.com/tbaldur/cyberpanel-LTS-LTS/raw/stable/phpmyadmin.zip'
             Upgrade.executioner(command, 0)
 
             command = 'unzip /usr/local/CyberCP/public/phpmyadmin.zip -d /usr/local/CyberCP/public/'
@@ -355,7 +328,7 @@ $cfg['Servers'][$i]['LogoutURL'] = 'phpmyadminsignin.php?logout';
         if os.path.exists('composer.sh'):
             os.remove('composer.sh')
 
-        command = "wget https://cyberpanel.sh/composer.sh"
+        command = "wget https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/composer.sh"
         Upgrade.executioner(command, 0)
 
         command = "chmod +x composer.sh"
@@ -1855,7 +1828,7 @@ autocreate_system_folders = On
 
                 os.chdir('/usr/local')
 
-                command = 'git clone https://github.com/tbaldur/cyberpanel'
+                command = 'git clone https://github.com/tbaldur/cyberpanel-LTS'
                 if not Upgrade.executioner(command, command, 1):
                     return 0, 'Failed to execute %s' % (command)
 
@@ -2500,7 +2473,7 @@ vmail
     @staticmethod
     def runSomeImportantBash():
 
-        # Remove invalid crons from /etc/crontab Reference: https://github.com/tbaldur/cyberpanel-LTS/issues/216
+        # Remove invalid crons from /etc/crontab Reference: https://github.com/tbaldur/cyberpanel-LTS-LTS/issues/216
         command = """sed -i '/CyberCP/d' /etc/crontab"""
         subprocess.call(command, shell=True)
 
@@ -2640,8 +2613,6 @@ vmail
         postfixPath = '/home/cyberpanel/postfix'
         pdns = '/home/cyberpanel/pdns'
         pureftpd = '/home/cyberpanel/ftp'
-
-        Upgrade.updateRepoURL()
 
         os.chdir("/usr/local")
 

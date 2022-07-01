@@ -837,7 +837,7 @@ Subject: %s
                     logging.statusWriter(self.statusPath,
                                          'It seems restic is not installed, for incremental backups to work '
                                          'restic must be installed. You can manually install restic using this '
-                                         'guide -> https://go.cyberpanel.net/restic. [5009]', 1)
+                                         'guide -> https://restic.readthedocs.io/en/stable/020_installation.html', 1)
                     pass
 
                 return 0

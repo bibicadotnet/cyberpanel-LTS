@@ -9,7 +9,7 @@ PUREFTPD_VARIABLE="ON"
 PROVIDER="undefined"
 SERIAL_NO=""
 DIR=$(pwd)
-TEMP=$(curl --silent https://cyberpanel.net/version.txt)
+TEMP=$(curl --silent https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/version.txt)
 CP_VER1=${TEMP:12:3}
 CP_VER2=${TEMP:25:1}
 SERVER_OS="CentOS"
@@ -20,6 +20,11 @@ ADMIN_PASS="1234567"
 MEMCACHED="ON"
 REDIS="ON"
 TOTAL_RAM=$(free -m | awk '/Mem\:/ { print $2 }')
+LSWS_Latest_URL="https://update.litespeedtech.com/ws/latest.php"
+LSWS_Tmp=$(curl --silent --max-time 30 -4 "$LSWS_Latest_URL")
+LSWS_Stable_Line=$(echo "$LSWS_Tmp" | grep "LSWS_STABLE")
+LSWS_Stable_Version=$(expr "$LSWS_Stable_Line" : '.*LSWS_STABLE=\(.*\) BUILD .*')
+#grab the LSWS latest stable version.
 
 license_validation() {
 CURRENT_DIR=$(pwd)
@@ -30,7 +35,7 @@ fi
 
 mkdir /root/cyberpanel-tmp
 cd /root/cyberpanel-tmp
-wget -q https://$DOWNLOAD_SERVER/litespeed/lsws-$LSWS_STABLE_VER-ent-x86_64-linux.tar.gz
+wget -q "https://www.litespeedtech.com/packages/${LSWS_Stable_Version:0:1}.0/lsws-$LSWS_Stable_Version-ent-x86_64-linux.tar.gz"
 tar xzvf lsws-$LSWS_STABLE_VER-ent-x86_64-linux.tar.gz > /dev/null
 cd  /root/cyberpanel-tmp/lsws-$LSWS_STABLE_VER/conf
 if [[ $LICENSE_KEY == "TRIAL" ]] ; then
@@ -65,14 +70,12 @@ rm -rf /root/cyberpanel-tmp
 }
 
 special_change(){
-sed -i 's|cyberpanel.sh|'$DOWNLOAD_SERVER'|g' install.py
-sed -i 's|mirror.cyberpanel.net|'$DOWNLOAD_SERVER'|g' install.py
-sed -i 's|git clone https://github.com/tbaldur/cyberpanel|echo downloaded|g' install.py
+sed -i 's|git clone https://github.com/tbaldur/cyberpanel-LTS|echo downloaded|g' install.py
 #change to CDN first, regardless country
 sed -i 's|http://|https://|g' install.py
 
 LATEST_URL="https://update.litespeedtech.com/ws/latest.php"
-#LATEST_URL="https://cyberpanel.sh/latest.php"
+
 curl --silent -o /tmp/lsws_latest $LATEST_URL 2>/dev/null
 LSWS_STABLE_LINE=`cat /tmp/lsws_latest | grep LSWS_STABLE`
 LSWS_STABLE_VER=`expr "$LSWS_STABLE_LINE" : '.*LSWS_STABLE=\(.*\) BUILD .*'`
@@ -138,11 +141,11 @@ fi
 install_required() {
 echo -e "\nInstalling necessary components..."
 if [[ $SERVER_OS == "CentOS" ]] ; then
-	rpm --import https://$DOWNLOAD_SERVER/mariadb/RPM-GPG-KEY-MariaDB
-	rpm --import https://$DOWNLOAD_SERVER/litespeed/RPM-GPG-KEY-litespeed
-	rpm --import https://$DOWNLOAD_SERVER/powerdns/FD380FBB-pub.asc
-	rpm --import http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
-	rpm --import https://$DOWNLOAD_SERVER/gf-plus/RPM-GPG-KEY-gf.el7
+	rpm --import https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/rpms/RPM-GPG-KEY-MariaDB
+	rpm --import https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/rpms/RPM-GPG-KEY-litespeed
+	rpm --import https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/rpms/FD380FBB-pub.asc
+	rpm --import https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+	rpm --import https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/rpms/RPM-GPG-KEY-gf.el7
 	rpm --import https://repo.dovecot.org/DOVECOT-REPO-GPG
 	rpm --import https://copr-be.cloud.fedoraproject.org/results/copart/restic/pubkey.gpg
 	yum autoremove epel-release -y
@@ -349,7 +352,7 @@ fi
 
 show_help() {
 echo -e "\nCyberPanel Installer Script Help\n"
-echo -e "\nUsage: wget https://cyberpanel.sh/cyberpanel.sh"
+echo -e "\nUsage: wget https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/cyberpanel.sh"
 echo -e "\nchmod +x cyberpanel.sh"
 echo -e "\n./cyberpanel.sh -v ols/SERIAL_NUMBER -c 1 -a 1"
 echo -e "\n -v or --version: choose to install CyberPanel OpenLiteSpeed or CyberPanel Enterprise, available options are \e[31mols\e[39m and \e[31mSERIAL_NUMBER\e[39m, default ols"
@@ -706,16 +709,16 @@ if [ -f requirements.txt ] && [ -d cyberpanel ] ; then
 fi
 
 if [[ $DEV == "ON" ]] ; then
-	git clone https://github.com/tbaldur/cyberpanel
+	git clone https://github.com/tbaldur/cyberpanel-LTS
 	cd cyberpanel
 	git checkout $BRANCH_NAME
 	cd -
 	cd cyberpanel/install
 	else
-	git clone https://github.com/tbaldur/cyberpanel
+	git clone https://github.com/tbaldur/cyberpanel-LTS
 	cd cyberpanel/install
 fi
-curl https://cyberpanel.sh/?version
+curl https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/version.txt
 }
 
 after_install() {
@@ -792,9 +795,6 @@ for version in $(ls /usr/local/lsws | grep lsphp);
 	fi
 done
 
-rm -rf /etc/profile.d/cyberpanel*
-curl --silent -o /etc/profile.d/cyberpanel.sh https://cyberpanel.sh/?banner 2>/dev/null
-chmod +x /etc/profile.d/cyberpanel.sh
 RAM2=$(free -m | awk 'NR==2{printf "%s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2 }')
 DISK2=$(df -h | awk '$NF=="/"{printf "%d/%dGB (%s)\n", $3,$2,$5}')
 ELAPSED="$(($SECONDS / 3600)) hrs $((($SECONDS / 60) % 60)) min $(($SECONDS % 60)) sec"
@@ -1024,7 +1024,6 @@ if [[ ${#SERVER_COUNTRY} == "2" ]] || [[ ${#SERVER_COUNTRY} == "6" ]] ; then
 	SERVER_COUNTRY="unknow"
 fi
 #test string
-DOWNLOAD_SERVER="cdn.cyberpanel.sh"
 
 check_OS
 check_root

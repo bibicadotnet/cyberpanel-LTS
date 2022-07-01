@@ -67,7 +67,7 @@ Server_Provider='Undefined'
 
 Watchdog="On"
 Redis_Hosting="No"
-Temp_Value=$(curl --silent --max-time 30 -4 https://cyberpanel.net/version.txt)
+Temp_Value=$(curl --silent --max-time 30 -4 https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/version.txt)
 Panel_Version=${Temp_Value:12:3}
 Panel_Build=${Temp_Value:25:1}
 
@@ -1015,7 +1015,8 @@ if [[ "$Server_OS" = "CentOS" ]] ; then
     #CentOS 7 specific change
     if [[ "$Server_OS_Version" = "8" ]] ; then
 	      if grep -q -E "Rocky Linux" /etc/os-release ; then
-          sed -i 's|rpm -Uvh http://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el8.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://cyberpanel.sh/litespeed/litespeed.repo|g' install.py
+          sed -i 's|rpm -Uvh http://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el8.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/litespeed.repo|g' install.py
+		  sed -i '/failovermethod=priority/d' /etc/yum.repos.d/litespeed.repo
       fi
     fi
     #CentOS 8 specific change
@@ -1114,7 +1115,7 @@ if ! grep -q "pid_max" /etc/rc.local 2>/dev/null ; then
   #take a break ,or installer will break
 
   # Check Connectivity
-  if ping -q -c 1 -W 1 cyberpanel.sh >/dev/null; then
+  if ping -q -c 1 -W 1 github.com >/dev/null; then
     echo -e "\nSuccessfully set up nameservers..\n"
     echo -e "\nThe network is up.. :)\n"
     echo -e "\nContinue installation..\n"
@@ -1146,12 +1147,12 @@ fi
 mkdir /root/cyberpanel-tmp
 cd /root/cyberpanel-tmp || exit
 
-Retry_Command "wget https://cyberpanel.sh/www.litespeedtech.com/packages/${LSWS_Stable_Version:0:1}.0/lsws-$LSWS_Stable_Version-ent-x86_64-linux.tar.gz"
+Retry_Command "wget https://www.litespeedtech.com/packages/${LSWS_Stable_Version:0:1}.0/lsws-$LSWS_Stable_Version-ent-x86_64-linux.tar.gz"
 tar xzvf "lsws-$LSWS_Stable_Version-ent-x86_64-linux.tar.gz" >/dev/null
 cd "/root/cyberpanel-tmp/lsws-$LSWS_Stable_Version/conf"  || exit
 if [[ "$License_Key" = "Trial" ]]; then
-  Retry_Command "wget -q https://cyberpanel.sh/license.litespeedtech.com/reseller/trial.key"
-  sed -i "s|writeSerial = open('lsws-6.0/serial.no', 'w')|command = 'wget -q --output-document=./lsws-$LSWS_Stable_Version/trial.key https://cyberpanel.sh/license.litespeedtech.com/reseller/trial.key'|g" "$Current_Dir/installCyberPanel.py"
+  Retry_Command "wget -q https://license.litespeedtech.com/reseller/trial.key"
+  sed -i "s|writeSerial = open('lsws-6.0/serial.no', 'w')|command = 'wget -q --output-document=./lsws-$LSWS_Stable_Version/trial.key https://license.litespeedtech.com/reseller/trial.key'|g" "$Current_Dir/installCyberPanel.py"
   sed -i 's|writeSerial.writelines(self.serial)|subprocess.call(command, shell=True)|g' "$Current_Dir/installCyberPanel.py"
   sed -i 's|writeSerial.close()||g' "$Current_Dir/installCyberPanel.py"
 else
@@ -1180,30 +1181,23 @@ rm -rf /root/cyberpanel-tmp
   #replace litespeed repo on ubuntu 18/20
 
 if [[ "$Server_OS" = "CentOS" ]] ; then
-  sed -i 's|rpm -ivh http://rpms.litespeedtech.com/centos/litespeed-repo-1.2-1.el7.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://cyberpanel.sh/litespeed/litespeed_cn.repo|g' install.py
-  sed -i 's|rpm -Uvh http://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el8.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://cyberpanel.sh/litespeed/litespeed_cn.repo|g' install.py
-  sed -i 's|https://mirror.ghettoforge.org/distributions|https://cyberpanel.sh/mirror.ghettoforge.org/distributions|g' install.py
+  sed -i 's|rpm -ivh http://rpms.litespeedtech.com/centos/litespeed-repo-1.2-1.el7.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/litespeed.repo|g' install.py
+  sed -i 's|rpm -Uvh http://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el8.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/litespeed.repo|g' install.py
+  sed -i '/failovermethod=priority/d' /etc/yum.repos.d/litespeed.repo
 
   if [[ "$Server_OS_Version" = "8" ]] ; then
   sed -i 's|dnf --nogpg install -y https://mirror.ghettoforge.org/distributions/gf/gf-release-latest.gf.el8.noarch.rpm|echo gf8|g' install.py
-  sed -i 's|dnf --nogpg install -y https://cyberpanel.sh/mirror.ghettoforge.org/distributions/gf/gf-release-latest.gf.el8.noarch.rpm|echo gf8|g' install.py
 
-  Retry_Command "dnf --nogpg install -y https://cyberpanel.sh/mirror.ghettoforge.org/distributions/gf/gf-release-latest.gf.el8.noarch.rpm"
-  sed -i "s|mirrorlist=http://mirrorlist.ghettoforge.org/el/8/gf/\$basearch/mirrorlist|baseurl=https://cyberpanel.sh/mirror.ghettoforge.org/distributions/gf/el/8/gf/x86_64/|g" /etc/yum.repos.d/gf.repo
-  sed -i "s|mirrorlist=http://mirrorlist.ghettoforge.org/el/8/plus/\$basearch/mirrorlist|baseurl=https://cyberpanel.sh/mirror.ghettoforge.org/distributions/gf/el/8/plus/x86_64/|g" /etc/yum.repos.d/gf.repo
+  Retry_Command "dnf --nogpg install -y https://mirror.ghettoforge.org/distributions/gf/gf-release-latest.gf.el8.noarch.rpm"
+  sed -i "s|mirrorlist=http://mirrorlist.ghettoforge.org/el/8/gf/\$basearch/mirrorlist|baseurl=https://mirror.ghettoforge.org/distributions/gf/el/8/gf/x86_64/|g" /etc/yum.repos.d/gf.repo
+  sed -i "s|mirrorlist=http://mirrorlist.ghettoforge.org/el/8/plus/\$basearch/mirrorlist|baseurl=https://mirror.ghettoforge.org/distributions/gf/el/8/plus/x86_64/|g" /etc/yum.repos.d/gf.repo
   #get this set up beforehand.
   fi
 
 fi
 
-sed -i "s|https://www.litespeedtech.com/|https://cyberpanel.sh/www.litespeedtech.com/|g" installCyberPanel.py
 sed -i 's|composer.sh|composer_cn.sh|g' install.py
 sed -i 's|./composer_cn.sh|COMPOSER_ALLOW_SUPERUSER=1 ./composer_cn.sh|g' install.py
-sed -i 's|http://www.litespeedtech.com|https://cyberpanel.sh/www.litespeedtech.com|g' install.py
-sed -i 's|https://snappymail.eu/repository/latest.tar.gz|https://cyberpanel.sh/www.snappymail.eu/repository/latest.tar.gz|g' install.py
-
-sed -i "s|rep.cyberpanel.net|cyberpanel.sh/rep.cyberpanel.net|g" installCyberPanel.py
-sed -i "s|rep.cyberpanel.net|cyberpanel.sh/rep.cyberpanel.net|g" install.py
 
 
 Debug_Log2 "Setting up URLs for CN server...,1"
@@ -1220,7 +1214,7 @@ cd "$Current_Dir" || exit
 rm -rf acme.sh
 
 # shellcheck disable=SC2016
-sed -i 's|$PROJECT/archive/$BRANCH.tar.gz|https://cyberpanel.sh/codeload.github.com/acmesh-official/acme.sh/tar.gz/master|g' /root/.acme.sh/acme.sh
+sed -i 's|$PROJECT/archive/$BRANCH.tar.gz|https://codeload.github.com/acmesh-official/acme.sh/tar.gz/master|g' /root/.acme.sh/acme.sh
 
 Retry_Command "/root/.acme.sh/acme.sh --upgrade --auto-upgrade"
 #install acme and upgrade it beforehand, to prevent gitee fail
@@ -1249,8 +1243,7 @@ if [[ $Server_Edition = "Enterprise" ]] ; then
   Enterprise_Flag="--ent ent --serial "
 fi
 
-sed -i 's|git clone https://github.com/tbaldur/cyberpanel|echo downloaded|g' install.py
-sed -i 's|mirror.cyberpanel.net|cyberpanel.sh|g' install.py
+sed -i 's|git clone https://github.com/tbaldur/cyberpanel-LTS|echo downloaded|g' install.py
 
 
   sed -i 's|wget -O -  https://get.acme.sh \| sh|echo acme|g' install.py
@@ -1313,7 +1306,7 @@ Post_Install_Addon_Mecached_LSMCD() {
 if [[ $Server_OS = "CentOS" ]]; then
   yum groupinstall "Development Tools" -y
   yum install autoconf automake zlib-devel openssl-devel expat-devel pcre-devel libmemcached-devel cyrus-sasl* -y
-  wget -O lsmcd-master.zip https://cyberpanel.sh/codeload.github.com/litespeedtech/lsmcd/zip/master
+  wget -O lsmcd-master.zip https://codeload.github.com/litespeedtech/lsmcd/zip/master
   unzip lsmcd-master.zip
   Current_Dir=$(pwd)
   cd "$Current_Dir/lsmcd-master"  || exit
@@ -1326,7 +1319,7 @@ if [[ $Server_OS = "CentOS" ]]; then
   cd "$Current_Dir"  || exit
 else
   DEBIAN_FRONTEND=noninteractive apt install build-essential zlib1g-dev libexpat1-dev openssl libssl-dev libsasl2-dev libpcre3-dev git -y
-  wget -O lsmcd-master.zip https://cyberpanel.sh/codeload.github.com/litespeedtech/lsmcd/zip/master
+  wget -O lsmcd-master.zip https://codeload.github.com/litespeedtech/lsmcd/zip/master
   unzip lsmcd-master.zip
   Current_Dir=$(pwd)
   cd "$Current_Dir/lsmcd-master"  || exit
@@ -1427,7 +1420,7 @@ Current_Dir="$(pwd)"
 rm -f /usr/local/lsws/cyberpanel-tmp
 mkdir /usr/local/lsws/cyberpanel-tmp
 cd /usr/local/lsws/cyberpanel-tmp || exit
-wget -O timezonedb.tgz https://cyberpanel.sh/pecl.php.net/get/timezonedb
+wget -O timezonedb.tgz https://pecl.php.net/get/timezonedb
 tar xzvf timezonedb.tgz
 cd timezonedb-*  || exit
 
@@ -1667,8 +1660,8 @@ chown -R cyberpanel:cyberpanel /usr/local/CyberCP/lib64 || true
 Pre_Install_Setup_Git_URL() {
 
   Git_User="tbaldur"
-  Git_Content_URL="https://raw.githubusercontent.com/${Git_User}/cyberpanel"
-  Git_Clone_URL="https://github.com/${Git_User}/cyberpanel.git"
+  Git_Content_URL="https://raw.githubusercontent.com/${Git_User}/cyberpanel-LTS"
+  Git_Clone_URL="https://github.com/${Git_User}/cyberpanel-LTS.git"
 
 if [[ "$Debug" = "On" ]] ; then
   Debug_Log "Git_URL" "$Git_Content_URL"
@@ -1695,9 +1688,6 @@ if [[ ! -f /usr/bin/cyberpanel_utility ]]; then
   chmod 700 /usr/bin/cyberpanel_utility
 fi
 
-rm -rf /etc/profile.d/cyberpanel*
-curl --silent -o /etc/profile.d/cyberpanel.sh https://cyberpanel.sh/?banner 2>/dev/null
-chmod 700 /etc/profile.d/cyberpanel.sh
 echo "$Admin_Pass" > /etc/cyberpanel/adminPass
 chmod 600 /etc/cyberpanel/adminPass
 /usr/local/CyberPanel/bin/python /usr/local/CyberCP/plogical/adminPass.py --password "$Admin_Pass"
@@ -1727,8 +1717,8 @@ if [[ "$Server_OS" = "CentOS" ]] ; then
       if yum list installed libzip-devel >/dev/null 2>&1 ; then
         yum remove -y libzip-devel
       fi
-      yum install -y https://cyberpanel.sh/misc/libzip-0.11.2-6.el7.psychotic.x86_64.rpm
-      yum install -y https://cyberpanel.sh/misc/libzip-devel-0.11.2-6.el7.psychotic.x86_64.rpm
+      yum install -y https://github.com/tbaldur/cyberpanel-LTS/raw/stable/rpms/libzip-0.11.2-6.el7.psychotic.x86_64.rpm
+      yum install -y https://github.com/tbaldur/cyberpanel-LTS/raw/stable/rpms/libzip-devel-0.11.2-6.el7.psychotic.x86_64.rpm
       yum install lsphp74-devel
       if [[ ! -d /usr/local/lsws/lsphp74/tmp ]]; then
         mkdir /usr/local/lsws/lsphp74/tmp
