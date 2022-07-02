@@ -71,7 +71,7 @@ Temp_Value=$(curl --silent --max-time 30 -4 https://raw.githubusercontent.com/tb
 Panel_Version=${Temp_Value:12:3}
 Panel_Build=${Temp_Value:25:1}
 
-Branch_Name="v${Panel_Version}.${Panel_Build}"
+Branch_Name="stable"
 
 if [[ $Branch_Name = v*.*.* ]] ; then
   echo -e  "\nBranch name fetched...$Branch_Name"
