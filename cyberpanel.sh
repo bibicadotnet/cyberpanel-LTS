@@ -89,9 +89,9 @@ Remote_MySQL="Off"
 
 Final_Flags=()
 
-Git_User=""
-Git_Content_URL=""
-Git_Clone_URL=""
+Git_User="tbaldur"
+Git_Content_URL="https://raw.githubusercontent.com/${Git_User}/cyberpanel-LTS"
+Git_Clone_URL="https://github.com/${Git_User}/cyberpanel-LTS.git"
 
 LSWS_Latest_URL="https://update.litespeedtech.com/ws/latest.php"
 LSWS_Tmp=$(curl --silent --max-time 30 -4 "$LSWS_Latest_URL")
