@@ -35,7 +35,7 @@ This is STILL IN PROGRESS. Please use the official cyberpanel instead.
 
 
 ```
-sh <(curl https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/cyberpanel.sh || wget -O - https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/install.sh)
+sh <(curl https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/install.sh || wget -O - https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/install.sh)
 ```
 
 # Upgrading CyberPanel
