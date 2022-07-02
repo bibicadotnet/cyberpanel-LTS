@@ -29,7 +29,7 @@ This is STILL IN PROGRESS. Please use the official cyberpanel instead.
 * PHP 7.4
 * PHP 7.3
 * PHP 7.2
-
+* PHP 7.1
 
 # Installation Instructions
 

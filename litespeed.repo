@@ -1,7 +1,6 @@
 [litespeed]
 name=LiteSpeed Tech Repository for CentOS $releasever - $basearch
 baseurl=https://rpms.litespeedtech.com/centos/$releasever/$basearch/
-failovermethod=priority
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-litespeed
@@ -9,7 +8,6 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-litespeed
 [litespeed-update]
 name=LiteSpeed Tech Update Repository for CentOS $releasever - $basearch
 baseurl=https://rpms.litespeedtech.com/centos/$releasever/update/$basearch/
-failovermethod=priority
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-litespeed
@@ -17,7 +15,6 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-litespeed
 [litespeed-edge]
 name=LiteSpeed Tech Edge Repository for CentOS $releasever - $basearch
 baseurl=https://rpms.litespeedtech.com/edge/centos/$releasever/$basearch/
-failovermethod=priority
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-litespeed
@@ -25,7 +22,6 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-litespeed
 [litespeed-edge-update]
 name=LiteSpeed Tech Edge Update Repository for CentOS $releasever - $basearch
 baseurl=https://rpms.litespeedtech.com/edge/centos/$releasever/update/$basearch/
-failovermethod=priority
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-litespeed

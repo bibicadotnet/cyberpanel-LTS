@@ -309,7 +309,7 @@ echo -e "Checking root privileges...\n"
 if [[ $(id -u) != 0 ]]  > /dev/null; then
 	echo -e "You must use root account to do this"
 	echo -e "or run following command: (do NOT miss the quotes)"
-	echo -e "\e[31msudo su -c \"sh <(curl https://cyberpanel.sh || wget -O - https://cyberpanel.sh)\"\e[39m"
+	echo -e "\e[31msudo su -c \"sh <(curl https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/cyberpanel.sh || wget -O - https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/cyberpanel.sh)\"\e[39m"
 	exit 1
 else
 	echo -e "You are runing as root...\n"
