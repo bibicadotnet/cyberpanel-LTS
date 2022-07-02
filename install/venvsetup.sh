@@ -694,8 +694,6 @@ virtualenv --system-site-packages /usr/local/CyberPanel
 fi
 
 if [[ $DEV == "ON" ]] ; then
-	#install dev branch 
-	#wget https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/$BRANCH_NAME/requirments.txt
 	cd /usr/local/
 	python3.6 -m venv CyberPanel
 	source /usr/local/CyberPanel/bin/activate

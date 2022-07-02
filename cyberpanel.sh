@@ -126,7 +126,8 @@ if [[ "$1" = *.*.* ]]; then
     echo -e "\nYou must use version number higher than 1.9.4"
     exit
   else
-    Branch_Name="v${1//[[:space:]]/}"
+    Branch_Name="stable" 
+#Branch_Name="v${1//[[:space:]]/}"
     echo -e "\nSet branch name to $Branch_Name..."
   fi
 else

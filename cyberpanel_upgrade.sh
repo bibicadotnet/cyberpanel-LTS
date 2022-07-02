@@ -29,7 +29,7 @@ Temp_Value=$(curl --silent --max-time 30 -4 https://raw.githubusercontent.com/tb
 Panel_Version=${Temp_Value:12:3}
 Panel_Build=${Temp_Value:25:1}
 
-Branch_Name="v${Panel_Version}.${Panel_Build}"
+Branch_Name="stable" #"v${Panel_Version}.${Panel_Build}"
 Base_Number="1.9.3"
 
 Git_User=""
@@ -173,7 +173,8 @@ if [[ "$1" = *.*.* ]]; then
     echo -e "\nYou must use version number higher than 1.9.4"
     exit
   else
-    Branch_Name="v${1//[[:space:]]/}"
+    Branch_Name="stable"
+	#Branch_Name="v${1//[[:space:]]/}"
     echo -e "\nSet branch name to $Branch_Name...\n"
   fi
 else
