@@ -73,7 +73,8 @@ Panel_Build=${Temp_Value:25:1}
 
 Branch_Name="stable"
 
-if [[ $Branch_Name = v*.*.* ]] ; then
+#if [[ $Branch_Name = v*.*.* ]] ; 
+if [[ $Branch_Name = "stable" ]] ; then
   echo -e  "\nBranch name fetched...$Branch_Name"
 else
   echo -e "\nUnable to fetch Branch name..."
