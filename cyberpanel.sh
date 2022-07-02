@@ -977,12 +977,12 @@ Retry_Command "git clone ${Git_Clone_URL}"
 
 echo -e "\nCyberPanel source code downloaded...\n"
 
-cd cyberpanel || exit
+cd cyberpanel-LTS || exit
 git checkout "$Branch_Name"
   Check_Return "git checkout"
 cd - || exit
-cp -r cyberpanel /usr/local/cyberpanel
-cd cyberpanel/install || exit
+cp -r cyberpanel-LTS /usr/local/cyberpanel
+cd cyberpanel-LTS/install || exit
 
 Debug_Log2 "Necessary components installed..,5"
 }
