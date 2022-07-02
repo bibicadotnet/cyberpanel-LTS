@@ -211,7 +211,7 @@ Server_IP=$(curl --silent --max-time 30 -4 https://ipv4.wtfismyip.com/text)
 
 echo -e "\nChecking server location...\n"
 
-  Server_Country=$(curl --silent https://ipinfo.io/$Server_IP/country)
+  Server_Country=$(curl --silent --max-time 10 -4 https://ipinfo.io/$Server_IP/country)
   if [[ ${#Server_Country} != "2" ]] ; then
    Server_Country="Unknow"
   fi
@@ -220,6 +220,7 @@ if [[ "$Debug" = "On" ]] ; then
   Debug_Log "Server_IP" "$Server_IP"
   Debug_Log "Server_Country" "$Server_Country"
 fi
+}
 
 Check_OS() {
 if [[ ! -f /etc/os-release ]] ; then
@@ -1177,47 +1178,6 @@ echo -e "\nLicense seems valid..."
 cd "$Current_Dir" || exit
 rm -rf /root/cyberpanel-tmp
   #clean up the temp files
-}
-  #replace litespeed repo on ubuntu 18/20
-
-if [[ "$Server_OS" = "CentOS" ]] ; then
-  sed -i 's|rpm -ivh http://rpms.litespeedtech.com/centos/litespeed-repo-1.2-1.el7.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/litespeed.repo|g' install.py
-  sed -i 's|rpm -Uvh http://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el8.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/litespeed.repo|g' install.py
-  sed -i '/failovermethod=priority/d' /etc/yum.repos.d/litespeed.repo
-
-  if [[ "$Server_OS_Version" = "8" ]] ; then
-  sed -i 's|dnf --nogpg install -y https://mirror.ghettoforge.org/distributions/gf/gf-release-latest.gf.el8.noarch.rpm|echo gf8|g' install.py
-
-  Retry_Command "dnf --nogpg install -y https://mirror.ghettoforge.org/distributions/gf/gf-release-latest.gf.el8.noarch.rpm"
-  sed -i "s|mirrorlist=http://mirrorlist.ghettoforge.org/el/8/gf/\$basearch/mirrorlist|baseurl=https://mirror.ghettoforge.org/distributions/gf/el/8/gf/x86_64/|g" /etc/yum.repos.d/gf.repo
-  sed -i "s|mirrorlist=http://mirrorlist.ghettoforge.org/el/8/plus/\$basearch/mirrorlist|baseurl=https://mirror.ghettoforge.org/distributions/gf/el/8/plus/x86_64/|g" /etc/yum.repos.d/gf.repo
-  #get this set up beforehand.
-  fi
-
-fi
-
-sed -i 's|composer.sh|composer_cn.sh|g' install.py
-sed -i 's|./composer_cn.sh|COMPOSER_ALLOW_SUPERUSER=1 ./composer_cn.sh|g' install.py
-
-
-Debug_Log2 "Setting up URLs for CN server...,1"
-
-
-sed -i 's|wget -O -  https://get.acme.sh \| sh|echo acme|g' install.py
-sed -i 's|/root/.acme.sh/acme.sh --upgrade --auto-upgrade|echo acme2|g' install.py
-
-Current_Dir=$(pwd)
-Retry_Command "git clone https://gitee.com/neilpang/acme.sh.git"
-cd acme.sh || exit
-./acme.sh --install
-cd "$Current_Dir" || exit
-rm -rf acme.sh
-
-# shellcheck disable=SC2016
-sed -i 's|$PROJECT/archive/$BRANCH.tar.gz|https://codeload.github.com/acmesh-official/acme.sh/tar.gz/master|g' /root/.acme.sh/acme.sh
-
-Retry_Command "/root/.acme.sh/acme.sh --upgrade --auto-upgrade"
-#install acme and upgrade it beforehand, to prevent gitee fail
 }
 
 Main_Installation() {
