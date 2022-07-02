@@ -74,13 +74,13 @@ Panel_Build=${Temp_Value:25:1}
 Branch_Name="stable"
 
 #if [[ $Branch_Name = v*.*.* ]] ; 
-if [[ $Branch_Name = "stable" ]] ; then
+# if [[ $Branch_Name = "stable" ]] ; then
   echo -e  "\nBranch name fetched...$Branch_Name"
-else
-  echo -e "\nUnable to fetch Branch name..."
-  echo -e "\nPlease try again in few moments, if this error still happens, please contact support"
-  exit
-fi
+# else
+  # echo -e "\nUnable to fetch Branch name..."
+  # echo -e "\nPlease try again in few moments, if this error still happens, please contact support"
+  # exit
+# fi
 
 Base_Number="1.9.3"
 
