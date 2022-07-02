@@ -878,7 +878,7 @@ Debug_Log2 "Setting up repositories...,1"
 Download_Requirement() {
 for i in {1..50} ;
   do
-  wget -O /usr/local/requirments.txt "${Git_Content_URL}/${Branch_Name}/requirments.txt"
+  wget -O /usr/local/requirments.txt "${Git_Content_URL}/stable/requirments.txt"
   if grep -q "Django==" /usr/local/requirments.txt ; then
     break
   else
