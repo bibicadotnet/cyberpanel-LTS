@@ -1019,7 +1019,6 @@ if [[ "$Server_OS" = "CentOS" ]] ; then
     if [[ "$Server_OS_Version" = "8" ]] ; then
 	      if grep -q -E "Rocky Linux" /etc/os-release ; then
           sed -i 's|rpm -Uvh http://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el8.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/litespeed.repo|g' install.py
-		  sed -i '/failovermethod=priority/d' /etc/yum.repos.d/litespeed.repo
       fi
     fi
     #CentOS 8 specific change
@@ -1742,7 +1741,34 @@ rm -rf /root/cyberpanel
 # If valid hostname is set that resolves externally we can issue an ssl. This will create the hostname as a website so we can issue the SSL and do our first login without SSL warnings or exceptions needed.
 HostName=$(hostname --fqdn); [ -n "$(dig @1.1.1.1 +short "$HostName")" ]  &&  echo "$HostName resolves to valid IP. Setting up hostname SSL" && cyberpanel createWebsite --package Default --owner admin --domainName $(hostname --fqdn) --email root@localhost --php 7.4 && cyberpanel hostNameSSL --domainName $(hostname --fqdn)
 
-
+echo "###################################################################"
+echo "                Installing CSF (ConfigServer Security and Firewall)..."
+echo "###################################################################"
+sudo /usr/local/CyberCP/bin/python /usr/local/CyberCP/plogical/csf.py installCSF
+echo "###################################################################"
+echo "                          CSF Installed!                           "
+echo "###################################################################"
+# HARDENING
+## SSH
+sed -i 's|#AllowAgentForwarding yes.*|AllowAgentForwarding no|g' /etc/ssh/sshd_config
+sed -i 's|#X11Forwarding no.*|X11Forwarding no|g' /etc/ssh/sshd_config
+sed -i 's|#TCPKeepAlive yes.*|TCPKeepAlive no|g' /etc/ssh/sshd_config
+sed -i 's|#MaxSessions 10.*|MaxSessions 2|g' /etc/ssh/sshd_config
+sed -i 's|#MaxAuthTries 6.*|MaxAuthTries 3|g' /etc/ssh/sshd_config
+sed -i 's|#LogLevel INFO.*|LogLevel VERBOSE|g' /etc/ssh/sshd_config
+sed -i 's|#Compression delayed.*|Compression no|g' /etc/ssh/sshd_config
+sed -i 's|#ClientAliveCountMax 3.*|ClientAliveCountMax 2|g' /etc/ssh/sshd_config
+sed -i 's|#AllowTcpForwarding yes.*|AllowTcpForwarding no|g' /etc/ssh/sshd_config
+sed -i 's|#PasswordAuthentication yes.*|PasswordAuthentication no|g' /etc/ssh/sshd_config
+sed -i 's|#GSSAPIAuthentication no.*|GSSAPIAuthentication no|g' /etc/ssh/sshd_config
+sed -i 's|#UseDNS no.*|UseDNS no|g' /etc/ssh/sshd_config
+sed -i 's|#UseDNS yes.*|UseDNS no|g' /etc/ssh/sshd_config
+sed -i 's|UseDNS yes.*|UseDNS no|g' /etc/ssh/sshd_config
+## Fail2Ban
+cp /etc/fail2ban/jail.{conf,local}
+sed -i 's#bantime  = 10m.*#bantime  = -1#' /etc/fail2ban/jail.local
+sed -i 's#findtime  = 10m.*#findtime  = 1d#' /etc/fail2ban/jail.local
+sed -i 's#maxretry = 5.*#maxretry = 3#' /etc/fail2ban/jail.local 
 }
 
 echo -e "\nInitializing...\n"

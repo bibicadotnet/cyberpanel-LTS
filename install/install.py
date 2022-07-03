@@ -684,7 +684,18 @@ password="%s"
         command = 'chmod 600 %s' % (destPrivKey)
         preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
 
-        ###
+
+    def install_fail2ban(self):
+        self.stdOut("Install fail2ban")
+        try:
+            if self.distro == centos or self.distro == cent8:
+                command = 'yum -y install fail2ban'
+            else:
+                command = 'apt-get -y install fail2ban'
+
+            preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+        except BaseException as msg:
+            logging.InstallLog.writeToFile('[ERROR] ' + str(msg) + " [install_fail2ban]")
 
     def install_unzip(self):
         self.stdOut("Install unzip")
@@ -2332,6 +2343,7 @@ def main():
             checks.setup_email_Passwords(installCyberPanel.InstallCyberPanel.mysqlPassword, mysql)
             checks.setup_postfix_dovecot_config(mysql)
 
+    checks.install_fail2ban()
     checks.install_unzip()
     checks.install_zip()
     checks.install_rsync()

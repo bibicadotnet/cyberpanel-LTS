@@ -292,7 +292,6 @@ if [[ "$Server_OS" = "CentOS" ]] ; then
   rm -f /etc/yum.repos.d/CyberPanel.repo
   rm -f /etc/yum.repos.d/litespeed.repo
   curl -o /etc/yum.repos.d/litespeed.repo https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/litespeed.repo
-  sed -i '/failovermethod=priority/d' /etc/yum.repos.d/litespeed.repo
   yum clean all
   yum update -y
   yum autoremove epel-release -y

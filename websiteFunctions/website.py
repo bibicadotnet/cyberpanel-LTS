@@ -60,44 +60,44 @@ class WebsiteManager:
         return proc.render()
 
     def WPCreate(self, request=None, userID=None, data=None):
-        url = "https://platform.cyberpersons.com/CyberpanelAdOns/Adonpermission"
-        data = {
-            "name": "wp-manager",
-            "IP": ACLManager.GetServerIP()
-        }
+        # url = "https://platform.cyberpersons.com/CyberpanelAdOns/Adonpermission"
+        # data = {
+            # "name": "wp-manager",
+            # "IP": ACLManager.GetServerIP()
+        # }
 
-        import requests
-        response = requests.post(url, data=json.dumps(data))
-        Status = response.json()['status']
+        # import requests
+        # response = requests.post(url, data=json.dumps(data))
+        # Status = response.json()['status']
 
-        if (Status == 1) or ProcessUtilities.decideServer() == ProcessUtilities.ent:
-            currentACL = ACLManager.loadedACL(userID)
-            adminNames = ACLManager.loadAllUsers(userID)
-            packagesName = ACLManager.loadPackages(userID, currentACL)
-            FinalVersions = []
-            userobj = Administrator.objects.get(pk=userID)
-            counter = 0
-            try:
-                import requests
-                WPVersions = json.loads(requests.get('https://api.wordpress.org/core/version-check/1.7/').text)['offers']
+        # if (Status == 1) or ProcessUtilities.decideServer() == ProcessUtilities.ent:
+        currentACL = ACLManager.loadedACL(userID)
+        adminNames = ACLManager.loadAllUsers(userID)
+        packagesName = ACLManager.loadPackages(userID, currentACL)
+        FinalVersions = []
+        userobj = Administrator.objects.get(pk=userID)
+        counter = 0
+        try:
+            import requests
+            WPVersions = json.loads(requests.get('https://api.wordpress.org/core/version-check/1.7/').text)['offers']
 
-                for versions in WPVersions:
-                    if counter == 7:
-                        break
-                    if versions['current'] not in FinalVersions:
-                        FinalVersions.append(versions['current'])
-                        counter = counter + 1
-            except:
-                FinalVersions = ['5.6', '5.5.3', '5.5.2']
+            for versions in WPVersions:
+                if counter == 7:
+                    break
+                if versions['current'] not in FinalVersions:
+                    FinalVersions.append(versions['current'])
+                    counter = counter + 1
+        except:
+            FinalVersions = ['5.6', '5.5.3', '5.5.2']
 
-            Plugins = wpplugins.objects.filter(owner=userobj)
+        Plugins = wpplugins.objects.filter(owner=userobj)
 
-            Data = {'packageList': packagesName, "owernList": adminNames, 'WPVersions': FinalVersions, 'Plugins': Plugins }
-            proc = httpProc(request, 'websiteFunctions/WPCreate.html',
-                            Data, 'createWebsite')
-            return proc.render()
-        else:
-            return redirect("https://cyberpanel.net/cyberpanel-addons")
+        Data = {'packageList': packagesName, "owernList": adminNames, 'WPVersions': FinalVersions, 'Plugins': Plugins }
+        proc = httpProc(request, 'websiteFunctions/WPCreate.html',
+                        Data, 'createWebsite')
+        return proc.render()
+        # else:
+            # return redirect("https://cyberpanel.net/cyberpanel-addons")
 
     def ListWPSites(self, request=None, userID=None, DeleteID=None):
         currentACL = ACLManager.loadedACL(userID)
@@ -141,34 +141,34 @@ class WebsiteManager:
 
         try:
 
-            url = "https://platform.cyberpersons.com/CyberpanelAdOns/Adonpermission"
-            data = {
-                "name": "wp-manager",
-                "IP": ACLManager.GetServerIP()
-            }
+            # url = "https://platform.cyberpersons.com/CyberpanelAdOns/Adonpermission"
+            # data = {
+                # "name": "wp-manager",
+                # "IP": ACLManager.GetServerIP()
+            # }
 
-            import requests
-            response = requests.post(url, data=json.dumps(data))
-            Status = response.json()['status']
+            # import requests
+            # response = requests.post(url, data=json.dumps(data))
+            # Status = response.json()['status']
 
-            if (Status == 1) or ProcessUtilities.decideServer() == ProcessUtilities.ent:
-                Data['wpsite'] = WPobj
+            # if (Status == 1) or ProcessUtilities.decideServer() == ProcessUtilities.ent:
+            Data['wpsite'] = WPobj
 
-                try:
-                    DeleteID = request.GET.get('DeleteID', None)
+            try:
+                DeleteID = request.GET.get('DeleteID', None)
 
-                    if DeleteID != None:
-                        wstagingDelete = WPStaging.objects.get(pk=DeleteID, owner=WPobj)
-                        wstagingDelete.delete()
+                if DeleteID != None:
+                    wstagingDelete = WPStaging.objects.get(pk=DeleteID, owner=WPobj)
+                    wstagingDelete.delete()
 
-                except BaseException as msg:
-                    da= str(msg)
+            except BaseException as msg:
+                da= str(msg)
 
-                proc = httpProc(request, 'websiteFunctions/WPsiteHome.html',
-                                Data, 'createWebsite')
-                return proc.render()
-            else:
-                return redirect("https://cyberpanel.net/cyberpanel-addons")
+            proc = httpProc(request, 'websiteFunctions/WPsiteHome.html',
+                            Data, 'createWebsite')
+            return proc.render()
+            # else:
+                # return redirect("https://cyberpanel.net/cyberpanel-addons")
 
         except:
             proc = httpProc(request, 'websiteFunctions/WPsiteHome.html',
@@ -180,96 +180,96 @@ class WebsiteManager:
         currentACL = ACLManager.loadedACL(userID)
         admin = Administrator.objects.get(pk=userID)
 
-        if ACLManager.CheckForPremFeature('wp-manager'):
+        # if ACLManager.CheckForPremFeature('wp-manager'):
 
-            Data['backupobj'] = WPSitesBackup.objects.get(pk=BackupID)
+        Data['backupobj'] = WPSitesBackup.objects.get(pk=BackupID)
 
-            if ACLManager.CheckIPBackupObjectOwner(currentACL, Data['backupobj'], admin) == 1:
-                pass
-            else:
-                return ACLManager.loadError()
-
-            config = json.loads(Data['backupobj'].config)
-            Data['FileName']= config['name']
-            try:
-                Data['Backuptype']= config['Backuptype']
-            except:
-                Data['Backuptype'] = None
-            Data['WPsites'] = ACLManager.GetALLWPObjects(currentACL, userID)
-            proc = httpProc(request, 'websiteFunctions/WPRestoreHome.html',
-                            Data, 'createWebsite')
-            return proc.render()
+        if ACLManager.CheckIPBackupObjectOwner(currentACL, Data['backupobj'], admin) == 1:
+            pass
         else:
-            return redirect("https://cyberpanel.net/cyberpanel-addons")
+            return ACLManager.loadError()
+
+        config = json.loads(Data['backupobj'].config)
+        Data['FileName']= config['name']
+        try:
+            Data['Backuptype']= config['Backuptype']
+        except:
+            Data['Backuptype'] = None
+        Data['WPsites'] = ACLManager.GetALLWPObjects(currentACL, userID)
+        proc = httpProc(request, 'websiteFunctions/WPRestoreHome.html',
+                        Data, 'createWebsite')
+        return proc.render()
+        # else:
+            # return redirect("https://cyberpanel.net/cyberpanel-addons")
 
     def RestoreBackups(self, request=None, userID=None, DeleteID=None):
         Data = {}
         currentACL = ACLManager.loadedACL(userID)
         admin = Administrator.objects.get(pk=userID)
 
-        url = "https://platform.cyberpersons.com/CyberpanelAdOns/Adonpermission"
-        data = {
-            "name": "wp-manager",
-            "IP": ACLManager.GetServerIP()
-        }
+        # url = "https://platform.cyberpersons.com/CyberpanelAdOns/Adonpermission"
+        # data = {
+            # "name": "wp-manager",
+            # "IP": ACLManager.GetServerIP()
+        # }
 
-        import requests
-        response = requests.post(url, data=json.dumps(data))
-        Status = response.json()['status']
+        # import requests
+        # response = requests.post(url, data=json.dumps(data))
+        # Status = response.json()['status']
 
-        if (Status == 1) or ProcessUtilities.decideServer() == ProcessUtilities.ent:
+        # if (Status == 1) or ProcessUtilities.decideServer() == ProcessUtilities.ent:
 
-            backobj = WPSitesBackup.objects.filter(owner=admin).order_by('-id')
+        backobj = WPSitesBackup.objects.filter(owner=admin).order_by('-id')
 
-            if ACLManager.CheckIPBackupObjectOwner(currentACL, backobj, admin) == 1:
-                pass
-            else:
-                return ACLManager.loadError()
+        if ACLManager.CheckIPBackupObjectOwner(currentACL, backobj, admin) == 1:
+            pass
+        else:
+            return ACLManager.loadError()
+
+        try:
+            if DeleteID != None:
+                DeleteIDobj = WPSitesBackup.objects.get(pk=DeleteID)
+
+                if ACLManager.CheckIPBackupObjectOwner(currentACL, DeleteIDobj, admin) == 1:
+
+                    config = DeleteIDobj.config
+                    conf = json.loads(config)
+                    FileName = conf['name']
+                    command = "rm -r /home/backup/%s.tar.gz"%FileName
+                    ProcessUtilities.executioner(command)
+                    DeleteIDobj.delete()
+
+        except BaseException as msg:
+            pass
+        Data['job'] = []
+
+        for sub in backobj:
+            try:
+                wpsite = WPSites.objects.get(pk=sub.WPSiteID)
+                web = wpsite.title
+            except:
+                web = "Website Not Found"
 
             try:
-                if DeleteID != None:
-                    DeleteIDobj = WPSitesBackup.objects.get(pk=DeleteID)
-
-                    if ACLManager.CheckIPBackupObjectOwner(currentACL, DeleteIDobj, admin) == 1:
-
-                        config = DeleteIDobj.config
-                        conf = json.loads(config)
-                        FileName = conf['name']
-                        command = "rm -r /home/backup/%s.tar.gz"%FileName
-                        ProcessUtilities.executioner(command)
-                        DeleteIDobj.delete()
-
-            except BaseException as msg:
-                pass
-            Data['job'] = []
-
-            for sub in backobj:
-                try:
-                    wpsite = WPSites.objects.get(pk=sub.WPSiteID)
-                    web = wpsite.title
-                except:
-                    web = "Website Not Found"
-
-                try:
-                    config = sub.config
-                    conf = json.loads(config)
-                    Backuptype = conf['Backuptype']
-                except:
-                    Backuptype = "Backup type not exists"
+                config = sub.config
+                conf = json.loads(config)
+                Backuptype = conf['Backuptype']
+            except:
+                Backuptype = "Backup type not exists"
 
 
-                Data['job'].append({
-                    'id': sub.id,
-                    'title': web,
-                    'Backuptype': Backuptype
-                })
+            Data['job'].append({
+                'id': sub.id,
+                'title': web,
+                'Backuptype': Backuptype
+            })
 
 
-            proc = httpProc(request, 'websiteFunctions/RestoreBackups.html',
-                            Data, 'createWebsite')
-            return proc.render()
-        else:
-            return redirect("https://cyberpanel.net/cyberpanel-addons")
+        proc = httpProc(request, 'websiteFunctions/RestoreBackups.html',
+                        Data, 'createWebsite')
+        return proc.render()
+        # else:
+            # return redirect("https://cyberpanel.net/cyberpanel-addons")
 
     def AutoLogin(self, request=None, userID=None):
 
@@ -286,99 +286,99 @@ class WebsiteManager:
         #php = VirtualHost.getPHPString(self.data['PHPVersion'])
         #FinalPHPPath = '/usr/local/lsws/lsphp%s/bin/php' % (php)
 
-        url = "https://platform.cyberpersons.com/CyberpanelAdOns/Adonpermission"
-        data = {
-            "name": "wp-manager",
-            "IP": ACLManager.GetServerIP()
-        }
+        # url = "https://platform.cyberpersons.com/CyberpanelAdOns/Adonpermission"
+        # data = {
+            # "name": "wp-manager",
+            # "IP": ACLManager.GetServerIP()
+        # }
 
-        import requests
-        response = requests.post(url, data=json.dumps(data))
-        Status = response.json()['status']
+        # import requests
+        # response = requests.post(url, data=json.dumps(data))
+        # Status = response.json()['status']
 
-        if (Status == 1) or ProcessUtilities.decideServer() == ProcessUtilities.ent:
+        # if (Status == 1) or ProcessUtilities.decideServer() == ProcessUtilities.ent:
 
-            ## Get title
+        ## Get title
 
-            password = randomPassword.generate_pass(10)
+        password = randomPassword.generate_pass(10)
 
-            command = 'sudo -u %s wp user create autologin %s --role=administrator --user_pass="%s" --path=%s --skip-plugins --skip-themes' % (WPobj.owner.externalApp, 'autologin@cloudpages.cloud', password, WPobj.path)
-            ProcessUtilities.executioner(command)
+        command = 'sudo -u %s wp user create autologin %s --role=administrator --user_pass="%s" --path=%s --skip-plugins --skip-themes' % (WPobj.owner.externalApp, 'autologin@cloudpages.cloud', password, WPobj.path)
+        ProcessUtilities.executioner(command)
 
-            command = 'sudo -u %s wp user update autologin --user_pass="%s" --path=%s --skip-plugins --skip-themes' % (WPobj.owner.externalApp, password, WPobj.path)
-            ProcessUtilities.executioner(command)
+        command = 'sudo -u %s wp user update autologin --user_pass="%s" --path=%s --skip-plugins --skip-themes' % (WPobj.owner.externalApp, password, WPobj.path)
+        ProcessUtilities.executioner(command)
 
-            data = {}
+        data = {}
 
-            if WPobj.FinalURL.endswith('/'):
-                FinalURL = WPobj.FinalURL[:-1]
-            else:
-                FinalURL = WPobj.FinalURL
-
-            data['url'] = 'https://%s' % (FinalURL)
-            data['userName'] = 'autologin'
-            data['password'] = password
-
-            proc = httpProc(request, 'websiteFunctions/AutoLogin.html',
-                            data, 'createWebsite')
-            return proc.render()
+        if WPobj.FinalURL.endswith('/'):
+            FinalURL = WPobj.FinalURL[:-1]
         else:
-            return redirect("https://cyberpanel.net/cyberpanel-addons")
+            FinalURL = WPobj.FinalURL
+
+        data['url'] = 'https://%s' % (FinalURL)
+        data['userName'] = 'autologin'
+        data['password'] = password
+
+        proc = httpProc(request, 'websiteFunctions/AutoLogin.html',
+                        data, 'createWebsite')
+        return proc.render()
+        # else:
+            # return redirect("https://cyberpanel.net/cyberpanel-addons")
 
     def ConfigurePlugins(self, request=None, userID=None, data=None):
 
-        if ACLManager.CheckForPremFeature('wp-manager'):
-            currentACL = ACLManager.loadedACL(userID)
-            userobj = Administrator.objects.get(pk=userID)
+        # if ACLManager.CheckForPremFeature('wp-manager'):
+        currentACL = ACLManager.loadedACL(userID)
+        userobj = Administrator.objects.get(pk=userID)
 
 
-            Selectedplugins = wpplugins.objects.filter(owner = userobj)
-            #data['Selectedplugins'] = wpplugins.objects.filter(ProjectOwner=HostingCompany)
+        Selectedplugins = wpplugins.objects.filter(owner = userobj)
+        #data['Selectedplugins'] = wpplugins.objects.filter(ProjectOwner=HostingCompany)
 
-            Data = {'Selectedplugins' : Selectedplugins,}
-            proc = httpProc(request, 'websiteFunctions/WPConfigurePlugins.html',
-                            Data, 'createWebsite')
-            return proc.render()
-        else:
-            return redirect("https://cyberpanel.net/cyberpanel-addons")
+        Data = {'Selectedplugins' : Selectedplugins,}
+        proc = httpProc(request, 'websiteFunctions/WPConfigurePlugins.html',
+                        Data, 'createWebsite')
+        return proc.render()
+        # else:
+            # return redirect("https://cyberpanel.net/cyberpanel-addons")
 
     def Addnewplugin(self, request=None, userID=None, data=None):
-        if ACLManager.CheckForPremFeature('wp-manager'):
-            currentACL = ACLManager.loadedACL(userID)
-            adminNames = ACLManager.loadAllUsers(userID)
-            packagesName = ACLManager.loadPackages(userID, currentACL)
-            phps = PHPManager.findPHPVersions()
+        # if ACLManager.CheckForPremFeature('wp-manager'):
+        currentACL = ACLManager.loadedACL(userID)
+        adminNames = ACLManager.loadAllUsers(userID)
+        packagesName = ACLManager.loadPackages(userID, currentACL)
+        phps = PHPManager.findPHPVersions()
 
-            Data = {'packageList': packagesName, "owernList": adminNames, 'phps': phps}
-            proc = httpProc(request, 'websiteFunctions/WPAddNewPlugin.html',
-                            Data, 'createWebsite')
-            return proc.render()
-        return redirect("https://cyberpanel.net/cyberpanel-addons")
+        Data = {'packageList': packagesName, "owernList": adminNames, 'phps': phps}
+        proc = httpProc(request, 'websiteFunctions/WPAddNewPlugin.html',
+                        Data, 'createWebsite')
+        return proc.render()
+        # return redirect("https://cyberpanel.net/cyberpanel-addons")
 
     def SearchOnkeyupPlugin(self, userID=None, data=None):
         try:
-            if ACLManager.CheckForPremFeature('wp-manager'):
-                currentACL = ACLManager.loadedACL(userID)
+            # if ACLManager.CheckForPremFeature('wp-manager'):
+            currentACL = ACLManager.loadedACL(userID)
 
-                pluginname = data['pluginname']
-                # logging.CyberCPLogFileWriter.writeToFile("Plugin Name ....... %s"%pluginname)
+            pluginname = data['pluginname']
+            # logging.CyberCPLogFileWriter.writeToFile("Plugin Name ....... %s"%pluginname)
 
-                url = "http://api.wordpress.org/plugins/info/1.1/?action=query_plugins&request[search]=%s" % str(pluginname)
-                import requests
+            url = "http://api.wordpress.org/plugins/info/1.1/?action=query_plugins&request[search]=%s" % str(pluginname)
+            import requests
 
-                res = requests.get(url)
-                r = res.json()
+            res = requests.get(url)
+            r = res.json()
 
-                # return proc.ajax(1, 'Done', {'plugins': r})
+            # return proc.ajax(1, 'Done', {'plugins': r})
 
-                data_ret = {'status': 1,'plugns': r,}
+            data_ret = {'status': 1,'plugns': r,}
 
-                json_data = json.dumps(data_ret)
-                return HttpResponse(json_data)
-            else:
-                data_ret = {'status': 0, 'createWebSiteStatus': 0, 'error_message': 'Premium feature not available.'}
-                json_data = json.dumps(data_ret)
-                return HttpResponse(json_data)
+            json_data = json.dumps(data_ret)
+            return HttpResponse(json_data)
+            # else:
+                # data_ret = {'status': 0, 'createWebSiteStatus': 0, 'error_message': 'Premium feature not available.'}
+                # json_data = json.dumps(data_ret)
+                # return HttpResponse(json_data)
 
         except BaseException as msg:
             data_ret = {'status': 0, 'createWebSiteStatus': 0, 'error_message': str(msg)}
