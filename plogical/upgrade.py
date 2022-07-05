@@ -246,7 +246,7 @@ class Upgrade:
             except:
                 pass
 
-            command = 'wget -O /usr/local/CyberCP/public/phpmyadmin.zip https://github.com/tbaldur/cyberpanel-LTS-LTS/raw/stable/phpmyadmin.zip'
+            command = 'wget -O /usr/local/CyberCP/public/phpmyadmin.zip https://github.com/tbaldur/cyberpanel-LTS/raw/stable/phpmyadmin.zip'
             Upgrade.executioner(command, 0)
 
             command = 'unzip /usr/local/CyberCP/public/phpmyadmin.zip -d /usr/local/CyberCP/public/'
@@ -2473,7 +2473,7 @@ vmail
     @staticmethod
     def runSomeImportantBash():
 
-        # Remove invalid crons from /etc/crontab Reference: https://github.com/tbaldur/cyberpanel-LTS-LTS/issues/216
+        # Remove invalid crons from /etc/crontab Reference: https://github.com/tbaldur/cyberpanel-LTS/issues/216
         command = """sed -i '/CyberCP/d' /etc/crontab"""
         subprocess.call(command, shell=True)
 

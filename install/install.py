@@ -727,7 +727,7 @@ password="%s"
             if not os.path.exists("/usr/local/CyberCP/public"):
                 os.mkdir("/usr/local/CyberCP/public")
 
-            command = 'wget -O /usr/local/CyberCP/public/phpmyadmin.zip https://github.com/tbaldur/cyberpanel-LTS-LTS/raw/stable/phpmyadmin.zip'
+            command = 'wget -O /usr/local/CyberCP/public/phpmyadmin.zip https://github.com/tbaldur/cyberpanel-LTS/raw/stable/phpmyadmin.zip' 
 
             preFlightsChecks.call(command, self.distro, '[download_install_phpmyadmin]',
                                   command, 1, 0, os.EX_OSERR)
