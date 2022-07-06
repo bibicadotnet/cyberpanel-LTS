@@ -7,7 +7,7 @@ import requests
 class InstallLog:
     fileName = "/var/log/installLogs.txt"
     currentPercent = '10'
-    LogURL = 'https://platform.cyberpersons.com/servers/RecvData'
+    # LogURL = 'https://platform.cyberpersons.com/servers/RecvData'
     ServerIP = ''
 
     @staticmethod
@@ -30,6 +30,6 @@ class InstallLog:
 
         try:
             finalData = json.dumps({'ipAddress': InstallLog.ServerIP, "InstallCyberPanelStatus": message})
-            requests.post(InstallLog.LogURL, data=finalData, timeout=10)
+            # requests.post(InstallLog.LogURL, data=finalData, timeout=10)
         except:
             pass

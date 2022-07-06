@@ -9,7 +9,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CyberCP.settings")
 
 class UpgradeCyberPanel:
 
-    LogURL = "https://platform.cyberpersons.com/settings/RecvData"
+    # LogURL = "https://platform.cyberpersons.com/settings/RecvData"
 
     def __init__(self, branch, mail, dns, ftp):
         ipFile = "/etc/cyberpanel/machineIP"
@@ -24,10 +24,10 @@ class UpgradeCyberPanel:
     def PostStatus(self, message):
         finalData = json.dumps({'ipAddress': self.ipAddress, "UpgradeCyberPanelStatus": message})
 
-        try:
-            resp = requests.post(UpgradeCyberPanel.LogURL, data=finalData, timeout=10)
-        except:
-            pass
+        # try:
+            # resp = requests.post(UpgradeCyberPanel.LogURL, data=finalData, timeout=10)
+        # except:
+            # pass
 
     def RestoreOldCP(self):
 
