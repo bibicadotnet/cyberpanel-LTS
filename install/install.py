@@ -316,7 +316,7 @@ class preFlightsChecks:
 
         if self.distro == ubuntu:
             try:
-                filename = "enable_lst_debain_repo.sh"
+                filename = "enable_lst_debian_repo.sh"
                 command = "wget http://rpms.litespeedtech.com/debian/" + filename
                 preFlightsChecks.call(command, self.distro, command, command, 1, 1, os.EX_OSERR)
 
