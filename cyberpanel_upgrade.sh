@@ -36,6 +36,11 @@ Git_User=""
 Git_Content_URL=""
 Git_Clone_URL=""
 
+Server_IP=$(curl --silent --max-time 30 -4 https://ipv4.wtfismyip.com/text)
+  if [[ $Server_IP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo -n $Server_IP > /etc/cyberpanel/machineIP
+  fi
+
 MySQL_Version=$(mysql -V | grep -P '\d+.\d+.\d+' -o)
 MySQL_Password=$(cat /etc/cyberpanel/mysqlPassword)
 
