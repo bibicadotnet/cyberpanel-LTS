@@ -151,7 +151,7 @@ def upgrade(request):
         except:
             pass
 
-        command = 'wget https://github.com' #cyberpanel.net/upgrade.py # to refactor for easy upgrade
+        command = 'wget https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/plogical/upgrade.py' #cyberpanel.net/upgrade.py # to refactor for easy upgrade
 
         cmd = shlex.split(command)
 

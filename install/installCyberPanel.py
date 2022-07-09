@@ -65,13 +65,13 @@ class InstallCyberPanel:
     def installLiteSpeed(self):
         if self.ent == 0:
             if self.distro == ubuntu:
-                command = "apt-get -y install openlitespeed"
+                command = "apt -y install openlitespeed"
                 install.preFlightsChecks.call(command, self.distro, command, command, 1, 1, os.EX_OSERR)
             elif self.distro == centos:
                 command = 'yum install -y openlitespeed'
                 install.preFlightsChecks.call(command, self.distro, command, command, 1, 1, os.EX_OSERR)
             else:
-                command = 'yum install -y openlitespeed'
+                command = 'dnf install -y openlitespeed'
                 install.preFlightsChecks.call(command, self.distro, command, command, 1, 1, os.EX_OSERR)
 
         else:

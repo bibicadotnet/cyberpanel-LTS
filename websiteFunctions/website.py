@@ -141,17 +141,7 @@ class WebsiteManager:
 
         try:
 
-            # url = "https://platform.cyberpersons.com/CyberpanelAdOns/Adonpermission"
-            # data = {
-                # "name": "wp-manager",
-                # "IP": ACLManager.GetServerIP()
-            # }
 
-            # import requests
-            # response = requests.post(url, data=json.dumps(data))
-            # Status = response.json()['status']
-
-            # if (Status == 1) or ProcessUtilities.decideServer() == ProcessUtilities.ent:
             Data['wpsite'] = WPobj
 
             try:
@@ -167,8 +157,6 @@ class WebsiteManager:
             proc = httpProc(request, 'websiteFunctions/WPsiteHome.html',
                             Data, 'createWebsite')
             return proc.render()
-            # else:
-                # return redirect("https://cyberpanel.net/cyberpanel-addons")
 
         except:
             proc = httpProc(request, 'websiteFunctions/WPsiteHome.html',
@@ -180,7 +168,6 @@ class WebsiteManager:
         currentACL = ACLManager.loadedACL(userID)
         admin = Administrator.objects.get(pk=userID)
 
-        # if ACLManager.CheckForPremFeature('wp-manager'):
 
         Data['backupobj'] = WPSitesBackup.objects.get(pk=BackupID)
 

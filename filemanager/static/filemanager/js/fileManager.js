@@ -637,7 +637,7 @@ fileManager.controller('fileManagerCtrl', function ($scope, $http, FileUploader,
                 completePathToFile = $scope.currentRPath;
             } else if (functionName === "doubleClick") {
 
-                completePathToFile = $scope.currentRPath + node.innerHTML + "/";
+                completePathToFile = $scope.currentRPath + "/" + node.innerHTML;
             } else if (functionName === "homeFetch") {
                 completePathToFile = homeRPathBack;
             } else if (functionName === "goBackOnPath") {

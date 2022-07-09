@@ -16,7 +16,6 @@ from plogical.CyberCPLogFileWriter import CyberCPLogFileWriter as logging
 from plogical.mysqlUtilities import mysqlUtilities
 class ClusterManager:
 
-    # LogURL = "https://platform.cyberpersons.com/HighAvailability/RecvData"
     UptimeURL = "https://platform.cyberpersons.com/servers/UptimeReport"
     ClusterFile = '/home/cyberpanel/cluster'
     CloudConfig = '/home/cyberpanel/cloud'
@@ -39,7 +38,6 @@ class ClusterManager:
     def PostStatus(self, message):
         try:
             finalData = {'name': self.config['name'], 'type': self.type, 'message': message, 'token': self.config['token']}
-            # resp = requests.post(ClusterManager.LogURL, data=json.dumps(finalData))
             if os.path.exists(ProcessUtilities.debugPath):
                 logging.writeToFile(resp.text + '[info]')
         except BaseException as msg:

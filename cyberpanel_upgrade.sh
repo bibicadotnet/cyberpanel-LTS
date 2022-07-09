@@ -675,7 +675,7 @@ if curl -I -XGET -k "https://127.0.0.1:${Panel_Port#*:}" | grep -q "200 OK" ; th
   echo "                CyberPanel Upgraded                                "
   echo "###################################################################"
 else
-  echo -e "\nSeems something wrong with upgarde, please check...\n"
+  echo -e "\nSeems something wrong with upgrade, please check...\n"
 fi
 rm -rf /root/cyberpanel_upgrade_tmp
 }
