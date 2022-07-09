@@ -990,7 +990,7 @@ Debug_Log2 "Necessary components installed..,5"
 }
 
 Pre_Install_crowdsec(){
-if [[ "$Server_OS" = "Ubuntu" ]]
+if [[ "$Server_OS" = "Ubuntu" ]]; then
 curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh | sudo bash
 else
 curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.rpm.sh | sudo bash
