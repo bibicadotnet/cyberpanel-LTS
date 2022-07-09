@@ -2250,52 +2250,51 @@ echo $oConfig->Save() ? 'Done' : 'Error';
 
     @staticmethod
     def upgrade_crowdsec(self):
-    Upgrade.stdOut("Install CrowdSec")
-    if not os.path.exists("/etc/crowdsec"):
-        try:
-            if Upgrade.FindOperatingSytem() == CENTOS7: #Install centos7 and clone distros
-                command = 'curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.rpm.sh | sudo bash'
+        if not os.path.exists("/etc/crowdsec"):
+            Upgrade.stdOut("Install CrowdSec")
+            try:
+                if Upgrade.FindOperatingSytem() == CENTOS7: #Install centos7 and clone distros
+                    command = 'curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.rpm.sh | sudo bash'
+                    Upgrade.executioner(command, 0)
+                    command = 'yum -y install crowdsec'
+                    Upgrade.executioner(command, 0)
+                    command = 'yum -y crowdsec-firewall-bouncer-iptables'
+                    Upgrade.executioner(command, 0)
+                elif Upgrade.FindOperatingSytem() == CENTOS8: #Install centos8 and clone distros
+                    command = 'curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.rpm.sh | sudo bash'
+                    Upgrade.executioner(command, 0)
+                    command = 'dnf -y install crowdsec'
+                    Upgrade.executioner(command, 0)
+                    command = 'dnf -y install crowdsec-firewall-bouncer-iptables'
+                    Upgrade.executioner(command, 0)
+                else: #Install ubuntu
+                    command = 'curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh | sudo bash'
+                    Upgrade.executioner(command, 0)
+                    command = 'apt -y install crowdsec'
+                    Upgrade.executioner(command, 0)
+                    command = 'apt -y install crowdsec-firewall-bouncer-iptables'
+                    Upgrade.executioner(command, 0)
+                # Setup collections
+                command = 'cscli collections install crowdsecurity/base-http-scenario'
                 Upgrade.executioner(command, 0)
-                command = 'yum -y install crowdsec'
+                command = 'cscli collections install crowdsecurity/iptables'
                 Upgrade.executioner(command, 0)
-                command = 'yum -y crowdsec-firewall-bouncer-iptables'
+                command = 'cscli collections install crowdsecurity/linux'
                 Upgrade.executioner(command, 0)
-            elif Upgrade.FindOperatingSytem() == CENTOS8: #Install centos8 and clone distros
-                command = 'curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.rpm.sh | sudo bash'
+                command = 'cscli collections install crowdsecurity/sshd'
                 Upgrade.executioner(command, 0)
-                command = 'dnf -y install crowdsec'
+                command = 'cscli collections install crowdsecurity/postfix'
                 Upgrade.executioner(command, 0)
-                command = 'dnf -y install crowdsec-firewall-bouncer-iptables'
+                command = 'cscli collections install crowdsecurity/mysql'
                 Upgrade.executioner(command, 0)
-            else: #Install ubuntu
-                command = 'curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh | sudo bash'
+                command = 'cscli collections install crowdsecurity/modsecurity'
                 Upgrade.executioner(command, 0)
-                command = 'apt -y install crowdsec'
+                command = 'cscli collections install crowdsecurity/linux-lpe'
                 Upgrade.executioner(command, 0)
-                command = 'apt -y install crowdsec-firewall-bouncer-iptables'
-                Upgrade.executioner(command, 0)
-            # Setup collections
-            command = 'cscli collections install crowdsecurity/base-http-scenario'
-            Upgrade.executioner(command, 0)
-            command = 'cscli collections install crowdsecurity/iptables'
-            Upgrade.executioner(command, 0)
-            command = 'cscli collections install crowdsecurity/linux'
-            Upgrade.executioner(command, 0)
-            command = 'cscli collections install crowdsecurity/sshd'
-            Upgrade.executioner(command, 0)
-            command = 'cscli collections install crowdsecurity/postfix'
-            Upgrade.executioner(command, 0)
-            command = 'cscli collections install crowdsecurity/mysql'
-            Upgrade.executioner(command, 0)
-            command = 'cscli collections install crowdsecurity/modsecurity'
-            Upgrade.executioner(command, 0)
-            command = 'cscli collections install crowdsecurity/linux-lpe'
-            Upgrade.executioner(command, 0)
 
-            Upgrade.executioner(command, 0)
-        except BaseException as msg:
-            Upgrade.stdOut(str(msg) + " [upgrade_crowdsec]")
-    else:
+                Upgrade.executioner(command, 0)
+            except BaseException as msg:
+                Upgrade.stdOut(str(msg) + " [upgrade_crowdsec]")
 
     @staticmethod
     def upgradeDovecot():
@@ -2750,7 +2749,7 @@ vmail
 
 
         ## Upgrade version
-
+        Upgrade.upgrade_crowdsecs()
         Upgrade.fixPermissions()
 
         ##
