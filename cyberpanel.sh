@@ -1760,7 +1760,7 @@ sed -i 's|#LogLevel INFO.*|LogLevel VERBOSE|g' /etc/ssh/sshd_config
 sed -i 's|#Compression delayed.*|Compression no|g' /etc/ssh/sshd_config
 sed -i 's|#ClientAliveCountMax 3.*|ClientAliveCountMax 2|g' /etc/ssh/sshd_config
 sed -i 's|#AllowTcpForwarding yes.*|AllowTcpForwarding no|g' /etc/ssh/sshd_config
-sed -i 's|#PasswordAuthentication yes.*|PasswordAuthentication no|g' /etc/ssh/sshd_config
+#sed -i 's|#PasswordAuthentication yes.*|PasswordAuthentication no|g' /etc/ssh/sshd_config
 sed -i 's|#GSSAPIAuthentication no.*|GSSAPIAuthentication no|g' /etc/ssh/sshd_config
 sed -i 's|#UseDNS no.*|UseDNS no|g' /etc/ssh/sshd_config
 sed -i 's|#UseDNS yes.*|UseDNS no|g' /etc/ssh/sshd_config
