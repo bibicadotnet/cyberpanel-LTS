@@ -273,6 +273,34 @@ class DNS:
                                      auth=1)
                     record.save()
 
+                    ## Outlook autodiscover settings
+
+                    mxValue = "smtp." + topLevelDomain
+
+                    record = Records(domainOwner=zone,
+                                     domain_id=zone.id,
+                                     name=mxValue,
+                                     type="A",
+                                     content=ipAddress,
+                                     ttl=3600,
+                                     prio=0,
+                                     disabled=0,
+                                     auth=1)
+                    record.save()
+
+                    mxValue = "imap." + topLevelDomain
+
+                    record = Records(domainOwner=zone,
+                                     domain_id=zone.id,
+                                     name=mxValue,
+                                     type="A",
+                                     content=ipAddress,
+                                     ttl=3600,
+                                     prio=0,
+                                     disabled=0,
+                                     auth=1)
+                    record.save()
+
                     ## TXT Records for mail
 
                     record = Records(domainOwner=zone,
