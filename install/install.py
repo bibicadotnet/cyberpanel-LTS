@@ -694,7 +694,7 @@ password="%s"
                 preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
                 command = 'yum -y crowdsec-firewall-bouncer-iptables'
                 preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
-            elif self.distro == centos8: #Install centos8 and clone distros
+            elif self.distro == cent8: #Install centos8 and clone distros
                 command = 'curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.rpm.sh | sudo bash'
                 preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
                 command = 'dnf -y install crowdsec'
