@@ -684,18 +684,62 @@ password="%s"
         command = 'chmod 600 %s' % (destPrivKey)
         preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
 
-
-    def install_fail2ban(self):
-        self.stdOut("Install fail2ban")
+    def install_crowdsec(self):
+        self.stdOut("Install CrowdSec")
         try:
-            if self.distro == centos or self.distro == cent8:
-                command = 'yum -y install fail2ban'
-            else:
-                command = 'apt-get -y install fail2ban'
-
+            if self.distro == centos: #Install centos7 and clone distros
+                command = 'curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.rpm.sh | sudo bash'
+                preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+                command = 'yum -y install crowdsec'
+                preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+                command = 'yum -y crowdsec-firewall-bouncer-iptables'
+                preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+            elif self.distro == centos8: #Install centos8 and clone distros
+                command = 'curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.rpm.sh | sudo bash'
+                preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+                command = 'dnf -y install crowdsec'
+                preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+                command = 'dnf -y install crowdsec-firewall-bouncer-iptables'
+                preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+            else: #Install ubuntu
+                command = 'curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh | sudo bash'
+                preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+                command = 'apt -y install crowdsec'
+                preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+                command = 'apt -y install crowdsec-firewall-bouncer-iptables'
+                preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+            # Setup collections
+            command = 'cscli collections install crowdsecurity/base-http-scenario'
+            preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+            command = 'cscli collections install crowdsecurity/iptables'
+            preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+            command = 'cscli collections install crowdsecurity/linux'
+            preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+            command = 'cscli collections install crowdsecurity/sshd'
+            preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+            command = 'cscli collections install crowdsecurity/postfix'
+            preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+            command = 'cscli collections install crowdsecurity/mysql'
+            preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+            command = 'cscli collections install crowdsecurity/modsecurity'
+            preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+            command = 'cscli collections install crowdsecurity/linux-lpe'
             preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
         except BaseException as msg:
-            logging.InstallLog.writeToFile('[ERROR] ' + str(msg) + " [install_fail2ban]")
+            logging.InstallLog.writeToFile('[ERROR] ' + str(msg) + " [install_crowdsec]")
+
+
+    # def install_fail2ban(self):
+        # self.stdOut("Install fail2ban")
+        # try:
+            # if self.distro == centos or self.distro == cent8:
+                # command = 'yum -y install fail2ban'
+            # else:
+                # command = 'apt-get -y install fail2ban'
+
+            # preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+        # except BaseException as msg:
+            # logging.InstallLog.writeToFile('[ERROR] ' + str(msg) + " [install_fail2ban]")
 
     def install_unzip(self):
         self.stdOut("Install unzip")
@@ -2351,7 +2395,8 @@ def main():
             checks.setup_email_Passwords(installCyberPanel.InstallCyberPanel.mysqlPassword, mysql)
             checks.setup_postfix_dovecot_config(mysql)
 
-    checks.install_fail2ban()
+    # checks.install_fail2ban()
+    checks.install_crowdsec()
     checks.install_unzip()
     checks.install_zip()
     checks.install_rsync()
