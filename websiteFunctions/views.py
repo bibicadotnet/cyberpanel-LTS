@@ -65,6 +65,32 @@ def RestoreHome(request):
         return wm.RestoreHome(request, userID, BackupID)
     except KeyError:
         return redirect(loadLoginPage)
+def RemoteBackupConfig(request):
+    try:
+        userID = request.session['userID']
+        DeleteID = request.GET.get('DeleteID')
+        wm = WebsiteManager()
+        return wm.RemoteBackupConfig(request, userID, DeleteID)
+    except KeyError:
+        return redirect(loadLoginPage)
+def BackupfileConfig(request):
+    try:
+        userID = request.session['userID']
+        ID = request.GET.get('ID')
+        DeleteID = request.GET.get('DeleteID')
+        wm = WebsiteManager()
+        return wm.BackupfileConfig(request, userID, ID, DeleteID)
+    except KeyError:
+        return redirect(loadLoginPage)
+def AddRemoteBackupsite(request):
+    try:
+        userID = request.session['userID']
+        ID = request.GET.get('ID')
+        DeleteSiteID = request.GET.get('DeleteID')
+        wm = WebsiteManager()
+        return wm.AddRemoteBackupsite(request, userID, ID,DeleteSiteID )
+    except KeyError:
+        return redirect(loadLoginPage)
 def RestoreBackups(request):
     try:
         userID = request.session['userID']
@@ -407,6 +433,62 @@ def RestoreWPbackupNow(request):
         return redirect(loadLoginPage)
 
 
+def SaveBackupConfig(request):
+    try:
+        userID = request.session['userID']
+        result = pluginManager.preWebsiteCreation(request)
+        if result != 200:
+            return result
+        wm = WebsiteManager()
+        coreResult = wm.SaveBackupConfig(userID, json.loads(request.body))
+        result = pluginManager.postWebsiteCreation(request, coreResult)
+        if result != 200:
+            return result
+        return coreResult
+    except KeyError:
+        return redirect(loadLoginPage)
+def SaveBackupSchedule(request):
+    try:
+        userID = request.session['userID']
+        result = pluginManager.preWebsiteCreation(request)
+        if result != 200:
+            return result
+        wm = WebsiteManager()
+        coreResult = wm.SaveBackupSchedule(userID, json.loads(request.body))
+        result = pluginManager.postWebsiteCreation(request, coreResult)
+        if result != 200:
+            return result
+        return coreResult
+    except KeyError:
+        return redirect(loadLoginPage)
+def AddWPsiteforRemoteBackup(request):
+    try:
+        userID = request.session['userID']
+        result = pluginManager.preWebsiteCreation(request)
+        if result != 200:
+            return result
+        wm = WebsiteManager()
+        coreResult = wm.AddWPsiteforRemoteBackup(userID, json.loads(request.body))
+        result = pluginManager.postWebsiteCreation(request, coreResult)
+        if result != 200:
+            return result
+        return coreResult
+    except KeyError:
+        return redirect(loadLoginPage)
+def UpdateRemoteschedules(request):
+    try:
+        userID = request.session['userID']
+        result = pluginManager.preWebsiteCreation(request)
+        if result != 200:
+            return result
+        wm = WebsiteManager()
+        coreResult = wm.UpdateRemoteschedules(userID, json.loads(request.body))
+        result = pluginManager.postWebsiteCreation(request, coreResult)
+        if result != 200:
+            return result
+        return coreResult
+    except KeyError:
+        return redirect(loadLoginPage)
 def installwpcore(request):
     try:
         userID = request.session['userID']
