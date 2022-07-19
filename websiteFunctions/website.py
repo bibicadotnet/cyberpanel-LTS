@@ -357,6 +357,7 @@ class WebsiteManager:
                 config = sub.config
                 conf = json.loads(config)
                 Backuptype = conf['Backuptype']
+                BackupDestination = conf['BackupDestination']
             except:
                 Backuptype = "Backup type not exists"
 
@@ -364,7 +365,8 @@ class WebsiteManager:
             Data['job'].append({
                 'id': sub.id,
                 'title': web,
-                'Backuptype': Backuptype
+                'Backuptype': Backuptype,
+                'BackupDestination': BackupDestination
             })
 
 
@@ -1279,6 +1281,44 @@ class WebsiteManager:
             scheduleobj.timeintervel = Frequency
             scheduleobj.fileretention = FileRetention
             scheduleobj.save()
+            data_ret = {'status': 1,  'error_message': 'None',}
+            json_data = json.dumps(data_ret)
+            return HttpResponse(json_data)
+        except BaseException as msg:
+            data_ret = {'status': 0,  'error_message': str(msg)}
+            json_data = json.dumps(data_ret)
+            return HttpResponse(json_data)
+    def ScanWordpressSite(self, userID=None, data=None):
+        try:
+            currentACL = ACLManager.loadedACL(userID)
+            admin = Administrator.objects.get(pk=userID)
+            allweb = Websites.objects.all()
+            childdomain = ChildDomains.objects.all()
+            for web in allweb:
+                webpath = "/home/%s/public_html/" % web.domain
+                command = "cat %swp-config.php" % webpath
+                result, stdout = ProcessUtilities.outputExecutioner(command, None, None, None, 1)
+                if result == 1:
+                    try:
+                        WPSites.objects.get(path=webpath)
+                    except:
+                        wpobj = WPSites(owner=web, title=web.domain, path=webpath, FinalURL=web.domain,
+                                        AutoUpdates="Enabled", PluginUpdates="Enabled",
+                                        ThemeUpdates="Enabled", )
+                        wpobj.save()
+            for chlid in childdomain:
+                childPath = chlid.path.rstrip('/')
+                command = "cat %s/wp-config.php"% childPath
+                result, stdout = ProcessUtilities.outputExecutioner(command, None, None, None, 1)
+                if result == 1:
+                    fChildPath = f'{childPath}/'
+                    try:
+                        WPSites.objects.get(path=fChildPath)
+                    except:
+                        wpobj = WPSites(owner=chlid.master, title=chlid.domain, path=fChildPath, FinalURL=chlid.domain,
+                                        AutoUpdates="Enabled", PluginUpdates="Enabled",
+                                        ThemeUpdates="Enabled", )
+                        wpobj.save()
             data_ret = {'status': 1,  'error_message': 'None',}
             json_data = json.dumps(data_ret)
             return HttpResponse(json_data)

@@ -855,10 +855,10 @@ password=%s
             else:
                 query = "SET PASSWORD FOR '" + userName + "'@'%s' = '" % (LOCALHOST) + dbPassword + "'"
 
-            cursor.execute(query)
 
             if os.path.exists(ProcessUtilities.debugPath):
                 logging.CyberCPLogFileWriter.writeToFile(query)
+            cursor.execute(query)
 
             connection.close()
 

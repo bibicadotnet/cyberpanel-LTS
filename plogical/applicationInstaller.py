@@ -2285,7 +2285,7 @@ $parameters = array(
 
                 command = f'sudo -u {VHuser} {FinalPHPPath} -d error_reporting=0 /usr/bin/wp config get DB_NAME  --skip-plugins --skip-themes --path={WPsitepath}'
                 print(command)
-                retStatus, stdoutput = ProcessUtilities.outputExecutioner(command, VHuser, None, None, 1)
+                retStatus, stdoutput = ProcessUtilities.outputExecutioner(command, None, None, None, 1)
                 print(stdoutput)
 
                 if stdoutput.find('Error:') == -1:
@@ -2295,12 +2295,14 @@ $parameters = array(
 
 
                 command = f'sudo -u {VHuser} {FinalPHPPath} -d error_reporting=0 /usr/bin/wp config get DB_USER  --skip-plugins --skip-themes --path={WPsitepath}'
-                retStatus, stdoutput = ProcessUtilities.outputExecutioner(command,VHuser, None, None, 1)
+                retStatus, stdoutput = ProcessUtilities.outputExecutioner(command,None, None, None, 1)
 
                 if stdoutput.find('Error:') == -1:
                     DataBaseUser = stdoutput.rstrip("\n")
                 else:
                     raise BaseException(stdoutput)
+                if os.path.exists(ProcessUtilities.debugPath):
+                    logging.writeToFile(f'DB Name: {DataBaseName}')
 
                 ### Create secure folder
 
@@ -2324,7 +2326,7 @@ $parameters = array(
                 logging.statusWriter(self.tempStatusPath, 'Creating Backup Directory...,40')
 
                 command = f"sudo -u {VHuser} mkdir -p {self.tempPath}/public_html"
-                result, stdout = ProcessUtilities.outputExecutioner(command, VHuser, None, None, 1)
+                result, stdout = ProcessUtilities.outputExecutioner(command, None, None, None, 1)
 
                 if result == 0:
                     raise BaseException(stdout)
@@ -2366,8 +2368,8 @@ $parameters = array(
 
                 os.chmod(configPath, 0o600)
 
-                command = f"sudo -u {VHuser} cp -R {configPath} {self.tempPath}"
-                retStatus, stdoutput = ProcessUtilities.outputExecutioner(command, VHuser, None, None, 1)
+                command = f"cp -R {configPath} {self.tempPath}"
+                retStatus, stdoutput = ProcessUtilities.outputExecutioner(command, None, None, None, 1)
                 if retStatus == 0:
                     raise BaseException(stdoutput)
 
@@ -2401,10 +2403,13 @@ $parameters = array(
 
                 logging.statusWriter(self.tempStatusPath, 'Copying database.....,70')
 
-
+                if os.path.exists(ProcessUtilities.debugPath):
+                    logging.writeToFile(f'DB Name Dump: {DataBaseName}')
                 ##### SQLDUMP database into new directory
 
                 command = "mysqldump %s --result-file %s/%s.sql" % (DataBaseName, self.tempPath, DataBaseName)
+                if os.path.exists(ProcessUtilities.debugPath):
+                    logging.writeToFile(command)
                 retStatus, result = ProcessUtilities.outputExecutioner(command, None, None, None, 1)
 
                 if retStatus == 0:
@@ -2584,15 +2589,17 @@ $parameters = array(
                 logging.statusWriter(self.tempStatusPath, 'Getting database...,20')
 
                 command = f'{FinalPHPPath} -d error_reporting=0 /usr/bin/wp config get DB_NAME  --skip-plugins --skip-themes --path={WPsitepath}'
-                retStatus, stdoutput = ProcessUtilities.outputExecutioner(command, VHuser, None, None, 1)
+                retStatus, stdoutput = ProcessUtilities.outputExecutioner(command, None, None, None, 1)
 
                 if stdoutput.find('Error:') == -1:
                     DataBaseName = stdoutput.rstrip("\n")
                 else:
                     raise BaseException(stdoutput)
 
+                if os.path.exists(ProcessUtilities.debugPath):
+                    logging.writeToFile(f'DB Name: {DataBaseName}')
                 command = f'{FinalPHPPath} -d error_reporting=0 /usr/bin/wp config get DB_USER  --skip-plugins --skip-themes --path={WPsitepath}'
-                retStatus, stdoutput = ProcessUtilities.outputExecutioner(command, VHuser, None, None, 1)
+                retStatus, stdoutput = ProcessUtilities.outputExecutioner(command, None, None, None, 1)
 
                 if stdoutput.find('Error:') == -1:
                     DataBaseUser = stdoutput.rstrip("\n")
@@ -2666,9 +2673,13 @@ $parameters = array(
 
                 logging.statusWriter(self.tempStatusPath, 'Copying DataBase.....,70')
 
+                if os.path.exists(ProcessUtilities.debugPath):
+                    logging.writeToFile(f'DB Name MySQL Dump: {DataBaseName}')
                 ##### SQLDUMP database into new directory
 
                 command = "mysqldump %s --result-file %s/%s.sql" % (DataBaseName, self.tempPath, DataBaseName)
+                if os.path.exists(ProcessUtilities.debugPath):
+                    logging.writeToFile(command)
                 retStatus, result = ProcessUtilities.outputExecutioner(command, None, None, None, 1)
 
                 if retStatus == 0:
@@ -2770,12 +2781,12 @@ $parameters = array(
 
                 with pysftp.Connection(HostName, username=Username, password=Password, cnopts=cnopts) as sftp:
                     logging.statusWriter(self.tempStatusPath, 'Downloading Backups...,15')
-                    loaclpath = "/home/cyberpanel/%s.tar.gz" % BackUpFileName
+                    localpath = "/home/cyberpanel/%s.tar.gz" % BackUpFileName
                     remotepath = "%s/%s.tar.gz" % (Path, BackUpFileName)
                     logging.writeToFile("Downloading start")
-                    sftp.get(str(remotepath), str(loaclpath))
+                    sftp.get(str(remotepath), str(localpath))
 
-                    command = "mv %s /home/backup"%loaclpath
+                    command = "mv %s /home/backup/"%localpath
                     ProcessUtilities.executioner(command)
 
                     ##### CHeck if Backup type is Only Database
@@ -3868,7 +3879,7 @@ $parameters = array(
                 except BaseException as msg:
                     logging.writeToFile("Error in downloadfile: ..%s"%str(msg))
 
-                command = "mv %s /home/backup" % FinalZipPath
+                command = "mv %s /home/backup/" % FinalZipPath
                 ProcessUtilities.executioner(command)
 
                 ##### CHeck if Backup type is Only Database

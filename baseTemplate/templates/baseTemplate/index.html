@@ -145,7 +145,7 @@
                             <li>
                                 <b class="pull-right">{$ ramUsage $}%</b>
                                 <div class="progress-title">
-                                    {% trans "Ram Usage" %}
+                                    {% trans "RAM Usage" %}
                                 </div>
                                 <div class="progressbar-small progressbar" data-value="{$ ramUsage $}">
                                     <div class="progressbar-value bg-red tooltip-button" title="{$ ramUsage $}%"></div>
@@ -417,6 +417,9 @@
                                     </li>
                                     <li><a href="{% url 'RestoreBackups' %}"
                                            title="{% trans 'RestoreBackups' %}"><span>{% trans "Restore Backups" %}</span></a>
+                                    </li>
+                                    <li><a href="{% url 'RemoteBackupConfig' %}"
+                                           title="{% trans 'Remote Backup' %}"><span>{% trans "Remote Backup" %}</span></a>
                                     </li>
                                 </ul>
 

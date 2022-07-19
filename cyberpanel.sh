@@ -5,7 +5,7 @@
 #set -u
 
 
-#CyberPanel installer script for CentOS 7.X, CentOS 8.X, CloudLinux 7.X, RockyLinux 8.X, Ubuntu 18.04, Ubuntu 20.04 , Ubuntu 20.10 and AlmaLinux 8.X
+#CyberPanel installer script for CentOS 7, CentOS 8, CloudLinux 7, AlmaLinux 8, RockyLinux 8, Ubuntu 18.04, Ubuntu 20.04, Ubuntu 20.10
 #For whoever may edit this script, please follow :
 #Please use Pre_Install_xxx() and Post_Install_xxx() if you want to something respectively before or after the panel installation
 #and update below accordingly
@@ -16,11 +16,11 @@
 #Set_Default_Variables() --->  set some default variable for later use
 #Check_Root()  ---> check for root
 #Check_Server_IP()  ---> check for server IP and geolocation at country level
-#Check_OS() ---> check system , support on centos7/8, rockylinux 8.x , almalinux 8.x ubutnu18/20 and cloudlinux 7 , 8 is untested.
+#Check_OS() ---> check system , support on CentOS 7/8, RockyLinux 8, AlmaLinux 8, Ubuntu 18/20 and CloudLinux 7, 8 is untested.
 #Check_Virtualization()  ---> check for virtualizaon , #LXC not supported# , some edit needed on OVZ
 #Check_Panel() --->  check to make sure no other panel is installed
 #Check_Process() ---> check no other process like Apache is running
-#Check_Provider() ---> check the provider, certain provider like Alibaba or Tencent Yun may need some special change
+#Check_Provider() ---> check the provider, certain provider like Alibaba or Tencent Cloud may need some special change
 #Check_Argument() ---> parse argument and go to Argument_Mode() or Interactive_Mode() respectively
 #Pre_Install_Setup_Repository() ---> setup/install repositories for centos system.
 #Pre_Install_Setup_Git_URL() --->  form up github URL , use Gitee for servers within China.
@@ -257,8 +257,8 @@ elif grep -q -E "Ubuntu 18.04|Ubuntu 20.04|Ubuntu 20.10|Ubuntu 22.04" /etc/os-re
   Server_OS="Ubuntu"
 else
   echo -e "Unable to detect your system..."
-  echo -e "\nCyberPanel is supported on Ubuntu 18.04 x86_64, Ubuntu 20.04 x86_64, Ubuntu 20.10 x86_64, Ubuntu 22.04 x86_64, CentOS 7.x, CentOS 8.x, AlmaLinux 8.x, RockyLinux 8.x, CloudLinux 7.x, CloudLinux 8.x...\n"
-  Debug_Log2 "CyberPanel is supported on Ubuntu 18.04 x86_64, Ubuntu 20.04 x86_64, Ubuntu 20.10 x86_64, Ubuntu 22.04 x86_64, CentOS 7.x, CentOS 8.x, AlmaLinux 8.x, RockyLinux 8.x, CloudLinux 7.x, CloudLinux 8.x... [404]"
+  echo -e "\nCyberPanel is supported on x86_64 based Ubuntu 18.04, Ubuntu 20.04, Ubuntu 20.10, Ubuntu 22.04, CentOS 7, CentOS 8, AlmaLinux 8, RockyLinux 8, CloudLinux 7, CloudLinux 8.\n"
+  Debug_Log2 "CyberPanel is supported on x86_64 based Ubuntu 18.04, Ubuntu 20.04, Ubuntu 20.10, Ubuntu 22.04, CentOS 7, CentOS 8, AlmaLinux 8, RockyLinux 8, CloudLinux 7, CloudLinux 8. [404]"
   exit
 fi
 
@@ -270,7 +270,7 @@ echo -e "System: $Server_OS $Server_OS_Version detected...\n"
 if [[ $Server_OS = "CloudLinux" ]] || [[ "$Server_OS" = "AlmaLinux" ]] || [[ "$Server_OS" = "RockyLinux" ]] ; then
   Server_OS="CentOS"
   #CloudLinux gives version id like 7.8 , 7.9 , so cut it to show first number only
-  #treat CL , Rocky and Alma as CentOS
+  #treat CloudLinux, Rocky and Alma as CentOS
 fi
 
 if [[ "$Debug" = "On" ]] ; then

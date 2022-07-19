@@ -4,7 +4,7 @@
 #set -x
 #set -u
 
-#CyberPanel installer script for CentOS 7.X, CentOS 8.X, CloudLinux 7.X, Ubuntu 18.04 and Ubuntu 20.04
+#CyberPanel installer script for CentOS 7, CentOS 8, CloudLinux 7, AlmaLinux 8, RockyLinux 8, Ubuntu 18.04, Ubuntu 20.04, Ubuntu 20.10
 #For whoever may edit this script, please follow :
 #Please use Pre_Install_xxx() and Post_Install_xxx() if you want to something respectively before or after the panel installation
 #and update below accordingly
@@ -75,7 +75,7 @@ echo -e "\nChecking root privileges..."
   fi
 
   if [[ $(id -u) != 0 ]] >/dev/null; then
-    echo -e "\nYou must run on root user to install CyberPanel...\n"
+    echo -e "\nYou must run as root user to install CyberPanel...\n"
     echo -e "or run following command: (do NOT miss the quotes)"
     echo -e "\e[31msudo su -c \"sh <(curl https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/cyberpanel.sh || wget -O - https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/cyberpanel.sh)\"\e[39m"
     exit 1
@@ -118,8 +118,8 @@ elif grep -q -E "Ubuntu 18.04|Ubuntu 20.04|Ubuntu 20.10" /etc/os-release ; then
   Server_OS="Ubuntu"
 else
   echo -e "Unable to detect your system..."
-  echo -e "\nCyberPanel is supported on Ubuntu 18.04 x86_64, Ubuntu 20.04 x86_64, Ubuntu 20.10 x86_64, CentOS 7.x, CentOS 8.x, CloudLinux 7.x and AlmaLinux 8.x...\n"
-  Debug_Log2 "CyberPanel is supported on Ubuntu 18.04 x86_64, Ubuntu 20.04 x86_64, Ubuntu 20.10 x86_64, CentOS 7.x, CentOS 8.x, AlmaLinux 8.x... [404]"
+  echo -e "\nCyberPanel is supported on x86_64 based Ubuntu 18.04, Ubuntu 20.04, Ubuntu 20.10, Ubuntu 22.04, CentOS 7, CentOS 8, AlmaLinux 8, RockyLinux 8, CloudLinux 7, CloudLinux 8.\n"
+  Debug_Log2 "CyberPanel is supported on x86_64 based Ubuntu 18.04, Ubuntu 20.04, Ubuntu 20.10, Ubuntu 22.04, CentOS 7, CentOS 8, AlmaLinux 8, RockyLinux 8, CloudLinux 7, CloudLinux 8. [404]"
   exit
 fi
 
@@ -131,7 +131,7 @@ echo -e "System: $Server_OS $Server_OS_Version detected...\n"
 if [[ $Server_OS = "CloudLinux" ]] || [[ "$Server_OS" = "AlmaLinux" ]] ; then
   Server_OS="CentOS"
   #CloudLinux gives version id like 7.8 , 7.9 , so cut it to show first number only
-  #treat CL and Alma as CentOS
+  #treat CloudLinux, Rocky and Alma as CentOS
 fi
 
 if [[ "$Debug" = "On" ]] ; then

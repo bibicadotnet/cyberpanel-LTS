@@ -25,8 +25,8 @@ check_OS() {
 	  Server_OS="RockyLinux"
 	else
 	  echo -e "Unable to detect your system..."
-	  echo -e "\nCyberPanel is supported on Ubuntu 18.04 x86_64, Ubuntu 20.04 x86_64, Ubuntu 20.10 x86_64, CentOS 7.x, CentOS 8.x, AlmaLinux 8.x, RockyLinux 8.x, CloudLinux 7.x, CloudLinux 8.x...\n"
-	  Debug_Log2 "CyberPanel is supported on Ubuntu 18.04 x86_64, Ubuntu 20.04 x86_64, Ubuntu 20.10 x86_64, CentOS 7.x, CentOS 8.x, AlmaLinux 8.x, RockyLinux 8.x, CloudLinux 7.x, CloudLinux 8.x... [404]"
+	  echo -e "\nCyberPanel is supported on x86_64 based Ubuntu 18.04, Ubuntu 20.04, Ubuntu 20.10, Ubuntu 22.04, CentOS 7, CentOS 8, AlmaLinux 8, RockyLinux 8, CloudLinux 7, CloudLinux 8.\n"
+  	  Debug_Log2 "CyberPanel is supported on x86_64 based Ubuntu 18.04, Ubuntu 20.04, Ubuntu 20.10, Ubuntu 22.04, CentOS 7, CentOS 8, AlmaLinux 8, RockyLinux 8, CloudLinux 7, CloudLinux 8. [404]"
 	  exit
 	fi
 
@@ -38,7 +38,7 @@ check_OS() {
 	if [[ $Server_OS = "CloudLinux" ]] || [[ "$Server_OS" = "AlmaLinux" ]] || [[ "$Server_OS" = "RockyLinux" ]] ; then
 	  Server_OS="CentOS"
 	  #CloudLinux gives version id like 7.8 , 7.9 , so cut it to show first number only
-	  #treat CL , Rocky and Alma as CentOS
+  	  #treat CloudLinux, Rocky and Alma as CentOS
 	fi
 
 }
