@@ -543,7 +543,7 @@ increment();
 
 ////////////
 
-app.controller('versionManagment', function ($scope, $http, $timeout) {
+app.controller('versionManagement', function ($scope, $http, $timeout) {
 
     $scope.upgradeLoading = true;
     $scope.upgradelogBox = true;

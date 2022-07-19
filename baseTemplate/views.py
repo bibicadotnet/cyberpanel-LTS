@@ -97,7 +97,7 @@ def getLoadAverage(request):
 
 
 @ensure_csrf_cookie
-def versionManagment(request):
+def versionManagement(request):
     ## Get latest version
 
     getVersion = requests.get('https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/version.txt')
@@ -110,7 +110,8 @@ def versionManagment(request):
     currentVersion = VERSION
     currentBuild = str(BUILD)
 
-    u = "https://api.github.com/repos/tbaldur/cyberpanel-LTS/commits?sha=v%s.%s" % (latestVersion, latestBuild)
+    #u = "https://api.github.com/repos/tbaldur/cyberpanel-LTS/commits?sha=v%s.%s" % (latestVersion, latestBuild)
+    u = "https://api.github.com/repos/tbaldur/cyberpanel-LTS/commits"
     logging.CyberCPLogFileWriter.writeToFile(u)
     r = requests.get(u)
     latestcomit = r.json()[0]['sha']
@@ -133,7 +134,7 @@ def versionManagment(request):
         notechk = False
 
 
-    template = 'baseTemplate/versionManagment.html'
+    template = 'baseTemplate/versionManagement.html'
     finalData = {'build': currentBuild, 'currentVersion': currentVersion, 'latestVersion': latestVersion,
                  'latestBuild': latestBuild, 'latestcomit': latestcomit, "Currentcomt": Currentcomt, "Notecheck" : notechk }
 
