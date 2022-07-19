@@ -21,8 +21,8 @@ class BackupUtil:
 
     @staticmethod
     def SendEmail(message):
-        sender = 'info@designti01.cyberhosting.org'
-        receivers = ['jeanftellier@gmail.com', 'jeanftellier@gmail.com']
+        sender = 'email@email.com'
+        receivers = ['email@email.com', 'jeanftellier@gmail.com']
 
         try:
             smtpObj = smtplib.SMTP('127.0.0.1')
