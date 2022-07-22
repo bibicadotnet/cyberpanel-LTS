@@ -398,7 +398,11 @@ class vhost:
                     ### Delete ACME Folder
 
                     if os.path.exists('/root/.acme.sh/%s' % (items.domain)):
-                        shutil.rmtree('/root/.acme.sh/%s' % (items.domain))
+                        shutil.rmtree('/root/.acme.sh/%s' % (items.domain))    
+                    ### Delete _ecc
+
+                    if os.path.exists('/root/.acme.sh/%s_ecc' % (items.domain)):
+                        shutil.rmtree('/root/.acme.sh/%s_ecc' % (items.domain))
 
                 ## Child check, to make sure no database entires are being deleted from child node
 
