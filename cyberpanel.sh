@@ -1511,9 +1511,9 @@ echo "                Panel password: *****                              "
 else
 echo "                Panel password: $Admin_Pass                        "
 fi
-#echo "                Visit: https://$Server_IP:7080                     "
-#echo "                WebAdmin console username: admin                   "
-#echo "                WebAdmin console password: $Webadmin_Pass          "
+echo "                Visit: https://$Server_IP:7080                     "
+echo "                WebAdmin console username: admin                   "
+echo "                WebAdmin console password: $Webadmin_Pass          "
 #echo "                                                                   "
 #echo "                Visit: https://$Server_IP:8090/snappymail/?admin     "
 #echo "                snappymail Admin username: admin                     "
