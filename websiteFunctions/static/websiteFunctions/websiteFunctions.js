@@ -166,9 +166,9 @@ app.controller('WPAddNewPlugin', function ($scope, $http, $timeout, $window, $co
         }
     }
 
-    $scope.deletesPlgin = function (val) {
+    $scope.deletesPlugin = function (val) {
 
-        url = "/websites/deletesPlgin";
+        url = "/websites/deletesPlugin";
 
 
         var data = {
@@ -210,7 +210,7 @@ app.controller('WPAddNewPlugin', function ($scope, $http, $timeout, $window, $co
     $scope.Addplugin = function (slug) {
         $('#mysearch').hide()
 
-        url = "/websites/Addplugineidt";
+        url = "/websites/AddPluginEdit";
 
 
         var data = {

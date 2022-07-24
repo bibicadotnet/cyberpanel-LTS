@@ -182,18 +182,18 @@ def AddNewpluginAjax(request):
         return redirect(loadLoginPage)
 
 
-def EidtPlugin(request):
+def EditPlugin(request):
     try:
         userID = request.session['userID']
 
         pluginbID = request.GET.get('ID')
         wm = WebsiteManager()
-        return wm.EidtPlugin(request, userID, pluginbID)
+        return wm.EditPlugin(request, userID, pluginbID)
     except KeyError:
         return redirect(loadLoginPage)
 
 
-def deletesPlgin(request):
+def deletesPlugin(request):
     try:
         userID = request.session['userID']
 
@@ -203,7 +203,7 @@ def deletesPlgin(request):
             return result
 
         wm = WebsiteManager()
-        coreResult = wm.deletesPlgin(userID, json.loads(request.body))
+        coreResult = wm.deletesPlugin(userID, json.loads(request.body))
 
         result = pluginManager.postWebsiteCreation(request, coreResult)
         if result != 200:
@@ -215,7 +215,7 @@ def deletesPlgin(request):
         return redirect(loadLoginPage)
 
 
-def Addplugineidt(request):
+def AddPluginEdit(request):
     try:
         userID = request.session['userID']
 
@@ -225,7 +225,7 @@ def Addplugineidt(request):
             return result
 
         wm = WebsiteManager()
-        coreResult = wm.Addplugineidt(userID, json.loads(request.body))
+        coreResult = wm.AddPluginEdit(userID, json.loads(request.body))
 
         result = pluginManager.postWebsiteCreation(request, coreResult)
         if result != 200:

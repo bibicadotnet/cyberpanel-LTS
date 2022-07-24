@@ -61,15 +61,15 @@ urlpatterns = [
     #### AddPlugin
     url(r'^ConfigurePlugins$', views.ConfigurePlugins, name='ConfigurePlugins'),
     url(r'^Addnewplugin$', views.Addnewplugin, name='Addnewplugin'),
-    url(r'^EidtPlugin$', views.EidtPlugin, name='EidtPlugin'),
+    url(r'^EditPlugin$', views.EditPlugin, name='EditPlugin'),
 
 
 
     ## AddPlugin Ajax
     url(r'^SearchOnkeyupPlugin$', views.SearchOnkeyupPlugin, name='SearchOnkeyupPlugin'),
     url(r'^AddNewpluginAjax$', views.AddNewpluginAjax, name='AddNewpluginAjax'),
-    url(r'^deletesPlgin', views.deletesPlgin, name='deletesPlgin'),
-    url(r'^Addplugineidt', views.Addplugineidt, name='Addplugineidt'),
+    url(r'^deletesPlugin', views.deletesPlugin, name='deletesPlugin'),
+    url(r'^AddPluginEdit', views.AddPluginEdit, name='AddPluginEdit'),
 
 
     # Website modification url

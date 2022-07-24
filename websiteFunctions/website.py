@@ -459,7 +459,7 @@ class WebsiteManager:
                         Data, 'createWebsite')
         return proc.render()
         # return redirect("https://cyberpanel.net/cyberpanel-addons")
-
+        ## To do: Add theme search
     def SearchOnkeyupPlugin(self, userID=None, data=None):
         try:
             # if ACLManager.CheckForPremFeature('wp-manager'):
@@ -516,7 +516,7 @@ class WebsiteManager:
             json_data = json.dumps(data_ret)
             return HttpResponse(json_data)
 
-    def EidtPlugin(self,request=None, userID=None, pluginbID=None):
+    def EditPlugin(self,request=None, userID=None, pluginbID=None):
         Data ={}
         currentACL = ACLManager.loadedACL(userID)
         admin = Administrator.objects.get(pk=userID)
@@ -533,11 +533,11 @@ class WebsiteManager:
         Data['BucketName'] = pluginobj.Name
 
 
-        proc = httpProc(request, 'websiteFunctions/WPEidtPlugin.html',
+        proc = httpProc(request, 'websiteFunctions/WPEditPlugin.html',
                         Data, 'createWebsite')
         return proc.render()
 
-    def deletesPlgin(self, userID=None, data=None,):
+    def deletesPlugin(self, userID=None, data=None,):
         try:
             currentACL = ACLManager.loadedACL(userID)
             admin = Administrator.objects.get(pk=userID)
@@ -565,11 +565,11 @@ class WebsiteManager:
             json_data = json.dumps(data_ret)
             return HttpResponse(json_data)
         except BaseException as msg:
-            data_ret = {'status': 0, 'deletesPlgin': 0, 'error_message': str(msg)}
+            data_ret = {'status': 0, 'deletesPlugin': 0, 'error_message': str(msg)}
             json_data = json.dumps(data_ret)
             return HttpResponse(json_data)
 
-    def Addplugineidt(self, userID=None, data=None,):
+    def AddPluginEdit(self, userID=None, data=None,):
         try:
             currentACL = ACLManager.loadedACL(userID)
             admin = Administrator.objects.get(pk=userID)
@@ -592,7 +592,7 @@ class WebsiteManager:
                 index = listofplugin.index(pluginname)
                 print('index.....%s' % index)
                 if (index >= 0):
-                    data_ret = {'status': 0, 'deletesPlgin': 0, 'error_message': str('Already Save in your Plugin lis')}
+                    data_ret = {'status': 0, 'deletesPlugin': 0, 'error_message': str('Already Save in your Plugin lis')}
                     json_data = json.dumps(data_ret)
                     return HttpResponse(json_data)
 
@@ -609,7 +609,7 @@ class WebsiteManager:
             json_data = json.dumps(data_ret)
             return HttpResponse(json_data)
         except BaseException as msg:
-            data_ret = {'status': 0, 'deletesPlgin': 0, 'error_message': str(msg)}
+            data_ret = {'status': 0, 'deletesPlugin': 0, 'error_message': str(msg)}
             json_data = json.dumps(data_ret)
             return HttpResponse(json_data)
 
