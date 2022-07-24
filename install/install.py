@@ -713,11 +713,19 @@ password="%s"
             preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
             command = 'cscli collections install crowdsecurity/postfix'
             preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
-            command = 'cscli collections install crowdsecurity/mysql'
+            command = 'cscli collections install crowdsecurity/mariadb'
             preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
             command = 'cscli collections install crowdsecurity/modsecurity'
             preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
             command = 'cscli collections install crowdsecurity/linux-lpe'
+            preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+            command = 'cscli collections install crowdsecurity/litespeed'
+            preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+            command = 'cscli collections install crowdsecurity/dovecot'
+            preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+            command = 'cscli collections install crowdsecurity/vsftpd'
+            preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+            command = 'cscli collections install crowdsecurity/wordpress'
             preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
         except BaseException as msg:
             logging.InstallLog.writeToFile('[ERROR] ' + str(msg) + " [install_crowdsec]")

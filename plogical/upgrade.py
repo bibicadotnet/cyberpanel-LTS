@@ -2028,11 +2028,19 @@ autocreate_system_folders = On
                     Upgrade.executioner(command, 0)
                     command = 'cscli collections install crowdsecurity/postfix'
                     Upgrade.executioner(command, 0)
-                    command = 'cscli collections install crowdsecurity/mysql'
+                    command = 'cscli collections install crowdsecurity/mariadb'
                     Upgrade.executioner(command, 0)
                     command = 'cscli collections install crowdsecurity/modsecurity'
                     Upgrade.executioner(command, 0)
                     command = 'cscli collections install crowdsecurity/linux-lpe'
+                    Upgrade.executioner(command, 0)
+                    command = 'cscli collections install crowdsecurity/litespeed'
+                    Upgrade.executioner(command, 0)
+                    command = 'cscli collections install crowdsecurity/dovecot'
+                    Upgrade.executioner(command, 0)
+                    command = 'cscli collections install crowdsecurity/vsftpd'
+                    Upgrade.executioner(command, 0)
+                    command = 'cscli collections install crowdsecurity/wordpress'
                     Upgrade.executioner(command, 0)
             except BaseException as msg:
                 Upgrade.stdOut(str(msg) + " [upgrade_crowdsec]")
