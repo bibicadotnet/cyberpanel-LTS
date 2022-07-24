@@ -381,86 +381,86 @@ class IncScheduler(multi.Thread):
                     GDriveJobLogs(owner=items, status=backupSchedule.INFO,
                                   message='Job Completed').save()
 
-                    print("job com[leted")
+                    print("job completed")
 
                     # logging.writeToFile('job completed')
 
-                    url = "https://platform.cyberpersons.com/CyberpanelAdOns/Adonpermission"
-                    data = {
-                        "name": "backups-retention",
-                        "IP": ipAddress
-                    }
+                    # url = "https://platform.cyberpersons.com/CyberpanelAdOns/Adonpermission"
+                    # data = {
+                        # "name": "backups-retention",
+                        # "IP": ipAddress
+                    # }
 
-                    import requests
-                    response = requests.post(url, data=json.dumps(data))
-                    Status = response.json()['status']
+                    # import requests
+                    # response = requests.post(url, data=json.dumps(data))
+                    # Status = response.json()['status']
 
-                    if (Status == 1) or ProcessUtilities.decideServer() == ProcessUtilities.ent:
+                    # if (Status == 1) or ProcessUtilities.decideServer() == ProcessUtilities.ent:
+                    try:
+
+                        page_token = None
+                        while True:
+                            response = drive.files().list(q="name='%s-%s'" % (items.name, ipAddress),
+                                                          spaces='drive',
+                                                          fields='nextPageToken, files(id, name)',
+                                                          pageToken=page_token).execute()
+                            for file in response.get('files', []):
+                                # Process change
+                                # print('Fetch Main folder ID: %s (%s)' % (file.get('name'), file.get('id')))
+                                # logging.writeToFile('Fetch Main folder ID: %s (%s)' % (file.get('name'), file.get('id')))
+                                mainfolder_id = file.get('id')
+                            page_token = response.get('nextPageToken', None)
+                            if page_token is None:
+                                break
+                        # print("new job started ")
                         try:
-
                             page_token = None
                             while True:
-                                response = drive.files().list(q="name='%s-%s'" % (items.name, ipAddress),
+                                response = drive.files().list(q="'%s' in parents" % (mainfolder_id),
                                                               spaces='drive',
-                                                              fields='nextPageToken, files(id, name)',
+                                                              fields='nextPageToken, files(id, name, createdTime)',
                                                               pageToken=page_token).execute()
                                 for file in response.get('files', []):
                                     # Process change
-                                    # print('Fetch Main folder ID: %s (%s)' % (file.get('name'), file.get('id')))
-                                    # logging.writeToFile('Fetch Main folder ID: %s (%s)' % (file.get('name'), file.get('id')))
-                                    mainfolder_id = file.get('id')
+                                    # print('Fetch all folders in main folder: %s (%s) time:-%s' % (file.get('name'), file.get('id'), file.get('createdTime')))
+                                    # logging.writeToFile('Fetch all folders in main folder: %s (%s) time:-%s' % (file.get('name'), file.get('id'),file.get('createdTime')))
+                                    ab = file.get('createdTime')[:10]
+                                    filename = file.get('name')
+                                    fileDeleteID = file.get('id')
+                                    timestamp = time.mktime(datetime.datetime.strptime(ab, "%Y-%m-%d").timetuple())
+                                    CUrrenttimestamp = time.time()
+                                    timerrtention = gDriveData['FileRetentiontime']
+                                    if (timerrtention == '1d'):
+                                        new = CUrrenttimestamp - float(86400)
+                                        if (new >= timestamp):
+                                            resp = drive.files().delete(fileId=fileDeleteID).execute()
+                                            logging.writeToFile('Delete file %s ' % filename)
+                                    elif (timerrtention == '1w'):
+                                        new = CUrrenttimestamp - float(604800)
+                                        if (new >= timestamp):
+                                            resp = drive.files().delete(fileId=fileDeleteID).execute()
+                                            logging.writeToFile('Delete file %s ' % filename)
+                                    elif (timerrtention == '1m'):
+                                        new = CUrrenttimestamp - float(2592000)
+                                        if (new >= timestamp):
+                                            resp = drive.files().delete(fileId=fileDeleteID).execute()
+                                            logging.writeToFile('Delete file %s ' % filename)
+                                    elif (timerrtention == '6m'):
+                                        new = CUrrenttimestamp - float(15552000)
+                                        if (new >= timestamp):
+                                            resp = drive.files().delete(fileId=fileDeleteID).execute()
+                                            logging.writeToFile('Delete file %s ' % filename)
                                 page_token = response.get('nextPageToken', None)
                                 if page_token is None:
                                     break
-                            # print("new job started ")
-                            try:
-                                page_token = None
-                                while True:
-                                    response = drive.files().list(q="'%s' in parents" % (mainfolder_id),
-                                                                  spaces='drive',
-                                                                  fields='nextPageToken, files(id, name, createdTime)',
-                                                                  pageToken=page_token).execute()
-                                    for file in response.get('files', []):
-                                        # Process change
-                                        # print('Fetch all folders in main folder: %s (%s) time:-%s' % (file.get('name'), file.get('id'), file.get('createdTime')))
-                                        # logging.writeToFile('Fetch all folders in main folder: %s (%s) time:-%s' % (file.get('name'), file.get('id'),file.get('createdTime')))
-                                        ab = file.get('createdTime')[:10]
-                                        filename = file.get('name')
-                                        fileDeleteID = file.get('id')
-                                        timestamp = time.mktime(datetime.datetime.strptime(ab, "%Y-%m-%d").timetuple())
-                                        CUrrenttimestamp = time.time()
-                                        timerrtention = gDriveData['FileRetentiontime']
-                                        if (timerrtention == '1d'):
-                                            new = CUrrenttimestamp - float(86400)
-                                            if (new >= timestamp):
-                                                resp = drive.files().delete(fileId=fileDeleteID).execute()
-                                                logging.writeToFile('Delete file %s ' % filename)
-                                        elif (timerrtention == '1w'):
-                                            new = CUrrenttimestamp - float(604800)
-                                            if (new >= timestamp):
-                                                resp = drive.files().delete(fileId=fileDeleteID).execute()
-                                                logging.writeToFile('Delete file %s ' % filename)
-                                        elif (timerrtention == '1m'):
-                                            new = CUrrenttimestamp - float(2592000)
-                                            if (new >= timestamp):
-                                                resp = drive.files().delete(fileId=fileDeleteID).execute()
-                                                logging.writeToFile('Delete file %s ' % filename)
-                                        elif (timerrtention == '6m'):
-                                            new = CUrrenttimestamp - float(15552000)
-                                            if (new >= timestamp):
-                                                resp = drive.files().delete(fileId=fileDeleteID).execute()
-                                                logging.writeToFile('Delete file %s ' % filename)
-                                    page_token = response.get('nextPageToken', None)
-                                    if page_token is None:
-                                        break
 
-                            # logging.writeToFile('Createtime list - %s'%Createtime)
+                        # logging.writeToFile('Createtime list - %s'%Createtime)
 
-                            except BaseException as msg:
-                                print('An error occurred fetch child: %s' % msg)
-                                logging.writeToFile('An error occurred fetch child: %s' % msg)
                         except BaseException as msg:
-                            logging.writeToFile('job not completed [ERROR:]..%s' % msg)
+                            print('An error occurred fetch child: %s' % msg)
+                            logging.writeToFile('An error occurred fetch child: %s' % msg)
+                    except BaseException as msg:
+                        logging.writeToFile('job not completed [ERROR:]..%s' % msg)
 
             except BaseException as msg:
                 GDriveJobLogs(owner=items, status=backupSchedule.ERROR,
@@ -1308,7 +1308,7 @@ Automatic backup failed for %s on %s.
             BucketName = Scheduleconfig['BucketName']
             #####Uploading File
 
-            uploadfilename = 'backup-' + websitedomain + "-" + time.strftime("%m.%d.%Y_%H-%M-%S")
+            uploadfilename = backupConfig['name']
             print("uploadfilename....%s"%uploadfilename)
 
             try:

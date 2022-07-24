@@ -304,7 +304,7 @@
                             <a id="sidebar-menu-item-server-ip-address" href="#" title="{% trans 'Server IP Address' %}">
                                 <i class="glyph-icon tooltip-button icon-laptop" title="{% trans 'Server IP Address' %}"
                                    data-original-title=".icon-laptop"></i>
-                                <span style="color: #db6868;font-weight: bold;">{{ ipAddress }}</span>
+                                <span style="color: #488a3f;font-weight: bold;">{{ ipAddress }}</span>
                             </a>
                             <a id="sidebar-menu-item-dashboard" href="{% url 'index' %}" title="{% trans 'Dashboard' %}">
                                 <i class="glyph-icon icon-dashboard"></i>
@@ -622,6 +622,9 @@
                                                    title="{% trans 'DKIM Manager' %}"><span>{% trans "DKIM Manager" %}</span></a>
                                             </li>
                                         {% endif %}
+                                            <li><a href="{% url 'EmailDebugger' %}"
+                                                   title="{% trans 'Email Debugger' %}"><span>{% trans "Email Debugger" %}</span></a>
+                                            </li>
                                         {% if admin or createEmail %}
                                             <li><a href="/snappymail/index.php" title="{% trans 'Access Webmail' %}"
                                                    target="_blank"><span>{% trans "Access Webmail" %}</span></a>
@@ -1033,6 +1036,9 @@
                                         </li>
                                         <li><a href="{% url 'MailScanner' %}"
                                                title="{% trans 'MailScanner' %}"><span>{% trans "MailScanner" %}</span></a>
+                                        </li>
+                                        <li><a href="{% url 'Rspamd' %}"
+                                               title="{% trans 'Rspamd' %}"><span>{% trans "Rspamd" %}</span></a>
                                         </li>
                                     </ul>
 

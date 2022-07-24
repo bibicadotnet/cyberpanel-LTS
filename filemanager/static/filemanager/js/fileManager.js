@@ -726,7 +726,7 @@ fileManager.controller('fileManagerCtrl', function ($scope, $http, FileUploader,
                         var fileSize = filesData[keys[i]][3];
                         var permissions = filesData[keys[i]][4];
                         var dirCheck = filesData[keys[i]][5];
-                        console.log(fileName);
+                        // console.log(fileName);
                         if (fileName === "..filemanagerkey") {
 
                             continue;

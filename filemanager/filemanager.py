@@ -263,7 +263,8 @@ class FileManager:
                         if currentFile[0][0] == 'd':
                             dirCheck = True
 
-                        finalData[str(counter)] = [currentFile[-1], self.data['completeStartingPath'] + '/' + currentFile[-1], dirCheck]
+                        finalData[str(counter)] = [currentFile[-1],
+                                                   self.data['completeStartingPath'] + '/' + currentFile[-1], dirCheck]
                         counter = counter + 1
                     except:
                         continue
