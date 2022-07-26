@@ -653,7 +653,8 @@ if [[ -f /etc/cyberpanel/watchdog.sh ]] ; then
 	ln -s /etc/cyberpanel/watchdog.sh /usr/local/bin/watchdog
 	watchdog status
 fi
-
+## Default php version from 73 to 74
+sed -i "s|lsphp73/bin/lsphp|lsphp74/bin/lsphp|g" /usr/local/lsws/conf/httpd_config.conf
 
 rm -f /usr/local/composer.sh
 rm -f /usr/local/requirments.txt

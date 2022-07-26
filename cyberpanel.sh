@@ -1511,9 +1511,10 @@ echo "                Panel password: *****                              "
 else
 echo "                Panel password: $Admin_Pass                        "
 fi
+echo "                                                                   "
 echo "                Visit: https://$Server_IP:7080                     "
-echo "                WebAdmin console username: admin                   "
-echo "                WebAdmin console password: $Webadmin_Pass          "
+echo "                OpenLitespeed WebAdmin username: admin             "
+echo "                OpenLitespeed WebAdmin password: $Webadmin_Pass    "
 #echo "                                                                   "
 #echo "                Visit: https://$Server_IP:8090/snappymail/?admin     "
 #echo "                snappymail Admin username: admin                     "
@@ -1769,7 +1770,9 @@ sed -i 's|UseDNS yes.*|UseDNS no|g' /etc/ssh/sshd_config
 cp /etc/fail2ban/jail.{conf,local}
 sed -i 's#bantime  = 10m.*#bantime  = -1#' /etc/fail2ban/jail.local
 sed -i 's#findtime  = 10m.*#findtime  = 1d#' /etc/fail2ban/jail.local
-sed -i 's#maxretry = 5.*#maxretry = 3#' /etc/fail2ban/jail.local 
+sed -i 's#maxretry = 5.*#maxretry = 3#' /etc/fail2ban/jail.local
+## Default php version from 73 to 74
+sed -i "s|lsphp73/bin/lsphp|lsphp74/bin/lsphp|g" /usr/local/lsws/conf/httpd_config.conf
 }
 
 echo -e "\nInitializing...\n"
