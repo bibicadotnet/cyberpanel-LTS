@@ -1911,7 +1911,7 @@ def ResetEmailConfigurations(request):
         ob = CloudManager()
         res = ob.ResetEmailConfigurations()
 
-            return res
+        return res
     except KeyError:
         return redirect(loadLoginPage)
 
