@@ -388,8 +388,8 @@ class WebsiteManager:
         else:
             return ACLManager.loadError()
 
-        php = VirtualHost.getPHPString(self.data['PHPVersion'])
-        FinalPHPPath = '/usr/local/lsws/lsphp%s/bin/php' % (php)
+        #php = VirtualHost.getPHPString(self.data['PHPVersion'])
+        #FinalPHPPath = '/usr/local/lsws/lsphp%s/bin/php' % (php)
 
         # url = "https://platform.cyberpersons.com/CyberpanelAdOns/Adonpermission"
         # data = {
@@ -592,7 +592,7 @@ class WebsiteManager:
                 index = listofplugin.index(pluginname)
                 print('index.....%s' % index)
                 if (index >= 0):
-                    data_ret = {'status': 0, 'deletesPlugin': 0, 'error_message': str('Already Save in your Plugin lis')}
+                    data_ret = {'status': 0, 'deletesPlugin': 0, 'error_message': str('Already Save in your Plugin list')}
                     json_data = json.dumps(data_ret)
                     return HttpResponse(json_data)
 
