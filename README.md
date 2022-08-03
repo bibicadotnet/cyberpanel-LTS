@@ -21,6 +21,14 @@ This is STILL IN PROGRESS. Please use the official cyberpanel instead.
 * PHP Managment.
 * Firewall (FirewallD & ConfigServer Firewall Integration).
 * One-click Backups and Restores.
+* #NEW 
+* Crowdsec implemented https://www.crowdsec.net/
+* Default settings tunning for enhanced security
+
+## TO DO:
+* Crowdsec GUI
+* Rework backup system
+
 
 # Supported PHP Versions
 
