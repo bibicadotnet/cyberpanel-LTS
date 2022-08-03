@@ -388,8 +388,8 @@ class WebsiteManager:
         else:
             return ACLManager.loadError()
 
-        #php = VirtualHost.getPHPString(self.data['PHPVersion'])
-        #FinalPHPPath = '/usr/local/lsws/lsphp%s/bin/php' % (php)
+        php = VirtualHost.getPHPString(self.data['PHPVersion'])
+        FinalPHPPath = '/usr/local/lsws/lsphp%s/bin/php' % (php)
 
         # url = "https://platform.cyberpersons.com/CyberpanelAdOns/Adonpermission"
         # data = {
