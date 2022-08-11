@@ -22,12 +22,14 @@ This is STILL IN PROGRESS. Please use the official cyberpanel instead.
 * Firewall (FirewallD & ConfigServer Firewall Integration).
 * One-click Backups and Restores.
 * #NEW 
-* Crowdsec implemented https://www.crowdsec.net/
+* Crowdsec implemented: https://www.crowdsec.net/
 * Default settings tunning for enhanced security
+* Counts vmail folder size to disk usage
 
 ## TO DO:
 * Crowdsec GUI
 * Rework backup system
+* Code cleanup
 
 
 # Supported PHP Versions
