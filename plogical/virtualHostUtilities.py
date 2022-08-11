@@ -1181,7 +1181,12 @@ class virtualHostUtilities:
     def getDiskUsage(path, totalAllowed):
         try:
 
-            totalUsageInMB = subprocess.check_output('du -hs %s --block-size=1M' % (path), shell=True).decode("utf-8").split()[0]
+            totalUsageInMB = subprocess.check_output('du -hs /home/%s --block-size=1M' % (path), shell=True).decode("utf-8").split()[0]
+
+            # Calculate vmail folder size and add it to usage
+            totalUsageEmailInMB = subprocess.check_output('du -hs /home/vmail/%s --block-size=1M' % (path), shell=True).decode("utf-8").split()[0]
+
+            totalUsageInMB = int(totalUsageEmailInMB) + int(totalUsageInMB)
 
             percentage = float(100) / float(totalAllowed)
 
