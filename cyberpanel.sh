@@ -1024,11 +1024,11 @@ if [[ "$Server_OS" = "CentOS" ]] ; then
     :
     fi
     #CentOS 7 specific change
-    if [[ "$Server_OS_Version" = "8" ]] ; then
-	      if grep -q -E "Rocky Linux" /etc/os-release ; then
-          sed -i 's|rpm -Uvh http://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el8.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/litespeed.repo|g' install.py
-      fi
-    fi
+    # if [[ "$Server_OS_Version" = "8" ]] ; then
+	      # if grep -q -E "Rocky Linux" /etc/os-release ; then
+          # sed -i 's|rpm -Uvh http://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el8.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/litespeed.repo|g' install.py
+      # fi
+    # fi
     #CentOS 8 specific change
 
 elif  [[ "$Server_OS" = "Ubuntu" ]] ; then
@@ -1767,10 +1767,10 @@ sed -i 's|#UseDNS no.*|UseDNS no|g' /etc/ssh/sshd_config
 sed -i 's|#UseDNS yes.*|UseDNS no|g' /etc/ssh/sshd_config
 sed -i 's|UseDNS yes.*|UseDNS no|g' /etc/ssh/sshd_config
 ## Fail2Ban
-cp /etc/fail2ban/jail.{conf,local}
-sed -i 's#bantime  = 10m.*#bantime  = -1#' /etc/fail2ban/jail.local
-sed -i 's#findtime  = 10m.*#findtime  = 1d#' /etc/fail2ban/jail.local
-sed -i 's#maxretry = 5.*#maxretry = 3#' /etc/fail2ban/jail.local
+# cp /etc/fail2ban/jail.{conf,local}
+# sed -i 's#bantime  = 10m.*#bantime  = -1#' /etc/fail2ban/jail.local
+# sed -i 's#findtime  = 10m.*#findtime  = 1d#' /etc/fail2ban/jail.local
+# sed -i 's#maxretry = 5.*#maxretry = 3#' /etc/fail2ban/jail.local
 ## Default php version from 73 to 74
 sed -i "s|lsphp73/bin/lsphp|lsphp74/bin/lsphp|g" /usr/local/lsws/conf/httpd_config.conf
 }

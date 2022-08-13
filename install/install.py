@@ -731,17 +731,17 @@ password="%s"
             logging.InstallLog.writeToFile('[ERROR] ' + str(msg) + " [install_crowdsec]")
 
 
-    def install_fail2ban(self):
-        self.stdOut("Install fail2ban")
-        try:
-            if self.distro == centos or self.distro == cent8:
-                command = 'yum -y install fail2ban'
-            else:
-                command = 'apt-get -y install fail2ban'
+    # def install_fail2ban(self):
+        # self.stdOut("Install fail2ban")
+        # try:
+            # if self.distro == centos or self.distro == cent8:
+                # command = 'yum -y install fail2ban'
+            # else:
+                # command = 'apt-get -y install fail2ban'
 
-            preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
-        except BaseException as msg:
-            logging.InstallLog.writeToFile('[ERROR] ' + str(msg) + " [install_fail2ban]")
+            # preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
+        # except BaseException as msg:
+            # logging.InstallLog.writeToFile('[ERROR] ' + str(msg) + " [install_fail2ban]")
 
     def install_unzip(self):
         self.stdOut("Install unzip")
@@ -1796,6 +1796,7 @@ autocreate_system_folders = On
 0 0 */3 * * /usr/local/CyberCP/bin/python /usr/local/CyberCP/IncBackups/IncScheduler.py '3 Days'
 0 0 * * 0 /usr/local/CyberCP/bin/python /usr/local/CyberCP/IncBackups/IncScheduler.py '1 Week'
 */3 * * * * if ! find /home/*/public_html/ -maxdepth 2 -type f -newer /usr/local/lsws/cgid -name '.htaccess' -exec false {} +; then /usr/local/lsws/bin/lswsctrl restart; fi
+*/15 * * * * /usr/local/CyberCP/bin/python /usr/local/CyberCP/IncBackups/IncScheduler.py CalculateAndUpdateDiskUsage'
 """
 
             cronFile.write(content)
@@ -2397,7 +2398,7 @@ def main():
             checks.setup_email_Passwords(installCyberPanel.InstallCyberPanel.mysqlPassword, mysql)
             checks.setup_postfix_dovecot_config(mysql)
 
-    checks.install_fail2ban()
+    # checks.install_fail2ban()
     checks.install_crowdsec()
     checks.install_unzip()
     checks.install_zip()
