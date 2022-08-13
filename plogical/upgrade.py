@@ -2632,7 +2632,7 @@ vmail
             ## Update website disk usage every 15 minutes
             if data.find("IncScheduler.py CalculateAndUpdateDiskUsage") == -1:
                 content = """
-*/15 * * * * /usr/local/CyberCP/bin/python /usr/local/CyberCP/IncBackups/IncScheduler.py CalculateAndUpdateDiskUsage'
+*/15 * * * * /usr/local/CyberCP/bin/python /usr/local/CyberCP/IncBackups/IncScheduler.py CalculateAndUpdateDiskUsage
 """
                 writeToFile = open(cronPath, 'a')
                 writeToFile.write(content)
