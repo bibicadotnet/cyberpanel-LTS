@@ -559,27 +559,28 @@ fi
 }
 
 Interactive_Mode() {
-echo -e "		CyberPanel Installer v$Panel_Version.$Panel_Build
-
-1. Install CyberPanel.
-
-2. Exit.
-
-"
-read -r -p "  Please enter the number[1-2]: " Input_Number
-echo ""
-case "$Input_Number" in
-  1)
-  Interactive_Mode_Set_Parameter
-  ;;
-  2)
-  exit
-  ;;
-  *)
-  echo -e "  Please enter the right number [1-2]\n"
-  exit
-  ;;
-esac
+#echo -e "		CyberPanel Installer v$Panel_Version.$Panel_Build
+#
+#1. Install CyberPanel.
+#
+#2. Exit.
+#
+#"
+#read -r -p "  Please enter the number[1-2]: " Input_Number
+#echo ""
+#case "$Input_Number" in
+#  1)
+#  Interactive_Mode_Set_Parameter
+#  ;;
+#  2)
+#  exit
+#  ;;
+#  *)
+#  echo -e "  Please enter the right number [1-2]\n"
+#  exit
+#  ;;
+#esac
+Interactive_Mode_Set_Parameter
 }
 
 
