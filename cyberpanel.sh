@@ -1034,7 +1034,7 @@ if [[ "$Server_OS" = "CentOS" ]] ; then
     #CentOS 7 specific change
     # if [[ "$Server_OS_Version" = "8" ]] ; then
 	      # if grep -q -E "Rocky Linux" /etc/os-release ; then
-          # sed -i 's|rpm -Uvh http://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el8.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/litespeed.repo|g' install.py
+          # sed -i 's|rpm -Uvh http://rpms.litespeedtech.com/centos/litespeed-repo-1.3-1.el8.noarch.rpm|curl -o /etc/yum.repos.d/litespeed.repo https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/stable/litespeed.repo|g' install.py
       # fi
     # fi
     #CentOS 8 specific change

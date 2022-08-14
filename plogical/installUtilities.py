@@ -46,7 +46,7 @@ class installUtilities:
 
             cmd.append("rpm")
             cmd.append("-ivh")
-            cmd.append("http://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el7.noarch.rpm")
+            cmd.append("http://rpms.litespeedtech.com/centos/litespeed-repo-1.3-1.el7.noarch.rpm")
             res = subprocess.call(cmd)
             if res == 1:
                 print("###############################################")
