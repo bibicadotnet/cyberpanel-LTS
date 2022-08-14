@@ -140,13 +140,14 @@ rm -f /usr/local/CyberPanel/cyberpanel_utility.sh
 }
 
 cyberpanel_upgrade() {
-SERVER_COUNTRY="unknow"
+SERVER_COUNTRY="unknown"
+# shellcheck disable=SC2046
 SERVER_COUNTRY=$(curl --silent --max-time 10 -4 https://ipinfo.io/$(curl --silent --max-time 30 -4 https://ipv4.wtfismyip.com/text)/country)
 if [[ ${#SERVER_COUNTRY} == "2" ]] || [[ ${#SERVER_COUNTRY} == "6" ]] ; then
 	echo -e "\nChecking server..."
 else
 	echo -e "\nChecking server..."
-	SERVER_COUNTRY="unknow"
+	SERVER_COUNTRY="unknown"
 fi
 
 #echo -e "CyberPanel Upgrade will start in 10 seconds"
@@ -267,7 +268,7 @@ install_redis() {
 }
 
 install_memcached() {
-echo -e "\n Would you like to install Memcached or LiteSpeed Mmecached ?"
+echo -e "\n Would you like to install Memcached or LiteSpeed Memcached ?"
 echo -e "\n 1. LiteSpeed Memcached"
 echo -e "\n 2. Memcached"
 echo -e "\n 3. Back to Main Menu\n"
@@ -292,12 +293,12 @@ read TMP_YN
 				wget https://github.com/tbaldur/cyberpanel-LTS/raw/stable/lsmcd.tar.gz
 				tar xzvf lsmcd.tar.gz
 				DIR=$(pwd)
-				cd $DIR/lsmcd
+				cd $DIR/lsmcd || exit
 				./fixtimestamp.sh
 				./configure CFLAGS=" -O3" CXXFLAGS=" -O3"
 				make
 				make install
-				cd $DIR
+				cd $DIR || exit
 		fi
 		if systemctl is-active --quiet lsmcd ; then
 		systemctl status lsmcd
@@ -319,7 +320,7 @@ read TMP_YN
 		if [[ ! -f /usr/bin/memcached ]] && [[ $SERVER_OS == "CentOS" ]] ; then
 		  yum install memcached -y
 		  sed -i 's|OPTIONS=""|OPTIONS="-l 127.0.0.1 -U 0"|g' /etc/sysconfig/memcached
-		  #this will disbale UDP and bind to 127.0.0.1 to prevent UDP amplification attack
+		  #this will disable UDP and bind to 127.0.0.1 to prevent UDP amplification attack
 		fi
 		if [[ ! -f /usr/bin/memcached ]] && [[ $SERVER_OS == "Ubuntu" ]] ; then
 		  DEBIAN_FRONTEND=noninteractive apt install memcached -y
@@ -399,7 +400,7 @@ fi
 
 sudo_check() {
 	echo -e "\nChecking root privileges..."
-	if echo $SUDO_TEST | grep SUDO > /dev/null ; then
+	if echo "$SUDO_TEST" | grep SUDO > /dev/null ; then
 		echo -e "\nYou are using SUDO , please run as root user..."
 		echo -e "\nIf you don't have direct access to root user, please run \e[31msudo su -\e[39m command (do NOT miss the \e[31m-\e[39m at end or it will fail) and then run utility command again."
 		exit
@@ -409,7 +410,7 @@ sudo_check() {
 		echo -e "\nYou must use root user to use CyberPanel Utility..."
 		exit
 	else
-		echo -e "\nYou are runing as root..."
+		echo -e "\nYou are running as root..."
 	fi
 }
 

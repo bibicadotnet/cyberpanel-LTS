@@ -688,7 +688,7 @@ pip install virtualenv
 virtualenv --system-site-packages /usr/local/CyberPanel
 source /usr/local/CyberPanel/bin/activate
 rm -rf requirements.txt
-wget -O requirements.txt https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/1.8.0/requirments.txt
+wget -O requirements.txt https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/1.8.0/requirements.txt
 pip install --ignore-installed -r requirements.txt
 virtualenv --system-site-packages /usr/local/CyberPanel
 fi
@@ -697,7 +697,7 @@ if [[ $DEV == "ON" ]] ; then
 	cd /usr/local/
 	python3.6 -m venv CyberPanel
 	source /usr/local/CyberPanel/bin/activate
-	wget -O requirements.txt https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/$BRANCH_NAME/requirments.txt
+	wget -O requirements.txt https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/$BRANCH_NAME/requirements.txt
 	pip3.6 install --ignore-installed -r requirements.txt
 fi
 
@@ -744,7 +744,7 @@ if grep "CyberPanel installation successfully completed" /var/log/installLogs.tx
 if [[ $DEV == "ON" ]] ; then
 python3.6 -m venv /usr/local/CyberCP
 source /usr/local/CyberCP/bin/activate
-wget -O requirements.txt https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/$BRANCH_NAME/requirments.txt
+wget -O requirements.txt https://raw.githubusercontent.com/tbaldur/cyberpanel-LTS/$BRANCH_NAME/requirements.txt
 pip3.6 install --ignore-installed -r requirements.txt
 systemctl restart lscpd
 fi

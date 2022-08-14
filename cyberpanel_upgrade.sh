@@ -38,7 +38,7 @@ Git_Clone_URL=""
 
 Server_IP=$(curl --silent --max-time 30 -4 https://ipv4.wtfismyip.com/text)
   if [[ $Server_IP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    echo -n $Server_IP > /etc/cyberpanel/machineIP
+    echo -n "$Server_IP" > /etc/cyberpanel/machineIP
   fi
 
 MySQL_Version=$(mysql -V | grep -P '\d+.\d+.\d+' -o)
@@ -87,6 +87,7 @@ echo -e "\nChecking root privileges..."
 Check_Server_IP() {
 echo -e "Checking server location...\n"
 
+# shellcheck disable=SC2046
 Server_Country=$(curl --silent --max-time 10 -4 https://ipinfo.io/$(curl --silent --max-time 30 -4 https://ipv4.wtfismyip.com/text)/country)
 if [[ ${#Server_Country} != "2" ]] ; then
   Server_Country="Unknow"
@@ -416,8 +417,8 @@ fi
 Download_Requirement() {
 for i in {1..50};
   do
-  wget -O /usr/local/requirments.txt "${Git_Content_URL}/${Branch_Name}/requirments.txt"
-  if grep -q "Django==" /usr/local/requirments.txt ; then
+  wget -O /usr/local/requirements.txt "${Git_Content_URL}/${Branch_Name}/requirements.txt"
+  if grep -q "Django==" /usr/local/requirements.txt ; then
     break
   else
     echo -e "\n Requirement list has failed to download for $i times..."
@@ -461,7 +462,7 @@ Download_Requirement
 if [[ "$Server_OS" = "CentOS" ]] ; then
   pip3.6 install --default-timeout=3600 virtualenv==16.7.9
     Check_Return
-  pip3.6 install --default-timeout=3600 --ignore-installed -r /usr/local/requirments.txt
+  pip3.6 install --default-timeout=3600 --ignore-installed -r /usr/local/requirements.txt
     Check_Return
 elif [[ "$Server_OS" = "Ubuntu" ]] ; then
   # shellcheck disable=SC1091
@@ -469,7 +470,7 @@ elif [[ "$Server_OS" = "Ubuntu" ]] ; then
     Check_Return
   pip3 install --default-timeout=3600 virtualenv==16.7.9
     Check_Return
-  pip3 install --default-timeout=3600 --ignore-installed -r /usr/local/requirments.txt
+  pip3 install --default-timeout=3600 --ignore-installed -r /usr/local/requirements.txt
     Check_Return
 fi
 
@@ -491,16 +492,17 @@ fi
 }
 
 Pre_Upgrade_Branch_Input() {
-  echo -e "\nPress Enter key to continue with latest version or Enter specific version such as: \e[31m1.9.4\e[39m , \e[31m1.9.5\e[39m ...etc"
-  echo -e "\nIf nothing is input in 10 seconds , script will proceed with latest stable. "
-  echo -e "\nPlease press Enter key , or specify a version number ,or wait for 10 seconds timeout: "
-  printf "%s" ""
-  read -r -t 10 Tmp_Input
-  if [[ $Tmp_Input = "" ]]; then
-    echo -e "Branch name set to $Branch_Name"
-  else
-    Branch_Check "$Tmp_Input"
-  fi
+  echo -e "\n Upgrade to  latest version starting... \n"
+#  echo -e "\nPress Enter key to continue with latest version or Enter specific version such as: \e[31m1.9.4\e[39m , \e[31m1.9.5\e[39m ...etc"
+#  echo -e "\nIf nothing is input in 10 seconds , script will proceed with latest stable. "
+#  echo -e "\nPlease press Enter key , or specify a version number ,or wait for 10 seconds timeout: "
+#  printf "%s" ""
+#  read -r -t 10 Tmp_Input
+#  if [[ $Tmp_Input = "" ]]; then
+#    echo -e "Branch name set to $Branch_Name"
+#  else
+#    Branch_Check "$Tmp_Input"
+#  fi
 }
 
 Main_Upgrade() {
@@ -512,13 +514,13 @@ if [[ -f /usr/local/CyberCP/bin/python2 ]]; then
   virtualenv -p /usr/bin/python3 /usr/local/CyberCP
     Check_Return
 elif [[ -d /usr/local/CyberCP/bin/ ]]; then
-  echo -e "\nNo need to resetup virtualenv at /usr/local/CyberCP...\n"
+  echo -e "\nNo need to setup virtualenv at /usr/local/CyberCP...\n"
 else
   virtualenv -p /usr/bin/python3 --system-site-packages /usr/local/CyberCP
     Check_Return
 fi
 
-rm -f /usr/local/requirments.txt
+rm -f /usr/local/requirements.txt
 
 Download_Requirement
 
@@ -526,13 +528,13 @@ if [ "$Server_OS" = "Ubuntu" ]; then
   # shellcheck disable=SC1091
   . /usr/local/CyberCP/bin/activate
     Check_Return
-  pip3 install --default-timeout=3600 --ignore-installed -r /usr/local/requirments.txt
+  pip3 install --default-timeout=3600 --ignore-installed -r /usr/local/requirements.txt
     Check_Return
 else
   # shellcheck disable=SC1091
   source /usr/local/CyberCP/bin/activate
     Check_Return
-  pip3.6 install --default-timeout=3600 --ignore-installed -r /usr/local/requirments.txt
+  pip3.6 install --default-timeout=3600 --ignore-installed -r /usr/local/requirements.txt
     Check_Return
 fi
 
@@ -550,7 +552,7 @@ cp lswsgi /usr/local/CyberCP/bin/
 Post_Upgrade_System_Tweak() {
   if [[ "$Server_OS" = "CentOS" ]] ; then
 
-  #for cenots 7/8
+  #for centOS 7/8
     if [[ "$Server_OS_Version" = "7" ]] ; then
       sed -i 's|error_reporting = E_ALL \&amp; ~E_DEPRECATED \&amp; ~E_STRICT|error_reporting = E_ALL \& ~E_DEPRECATED \& ~E_STRICT|g' /usr/local/lsws/{lsphp72,lsphp73}/etc/php.ini
     #fix php.ini &amp; issue
@@ -657,7 +659,7 @@ fi
 sed -i "s|lsphp73/bin/lsphp|lsphp74/bin/lsphp|g" /usr/local/lsws/conf/httpd_config.conf
 
 rm -f /usr/local/composer.sh
-rm -f /usr/local/requirments.txt
+rm -f /usr/local/requirements.txt
 
 chown -R cyberpanel:cyberpanel /usr/local/CyberCP/lib
 chown -R cyberpanel:cyberpanel /usr/local/CyberCP/lib64

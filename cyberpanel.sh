@@ -60,7 +60,7 @@ PowerDNS_Switch="On"
 PureFTPd_Switch="On"
 
 Server_IP=""
-Server_Country="Unknow"
+Server_Country="Unknown"
 Server_OS=""
 Server_OS_Version=""
 Server_Provider='Undefined'
@@ -213,9 +213,9 @@ Server_IP=$(curl --silent --max-time 30 -4 https://ipv4.wtfismyip.com/text)
 
 echo -e "\nChecking server location...\n"
 
-  Server_Country=$(curl --silent --max-time 10 -4 https://ipinfo.io/$Server_IP/country)
+  Server_Country=$(curl --silent --max-time 10 -4 https://ipinfo.io/"$Server_IP"/country)
   if [[ ${#Server_Country} != "2" ]] ; then
-   Server_Country="Unknow"
+   Server_Country="Unknown"
   fi
 
 if [[ "$Debug" = "On" ]] ; then
@@ -457,7 +457,7 @@ else
         Admin_Pass="1234567"
       elif [[ ${1} = "r" ]] || [[ $1 = "random" ]]; then
         Admin_Pass=$(
-        head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16
+        head /dev/urandom | tr -dc A-Za-z0-9 | head -c 20
         echo ''
         )
       elif [[ ${1} = "d" ]]; then
@@ -590,31 +590,32 @@ RAM check : $(free -m | awk 'NR==2{printf "%s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2 
 
 Disk check : $(df -h | awk '$NF=="/"{printf "%d/%dGB (%s)\n", $3,$2,$5}') (Minimal \e[31m10GB\e[39m free space)
 
-1. Install CyberPanel with \e[31mOpenLiteSpeed\e[39m.
-
-2. Install Cyberpanel with \e[31mLiteSpeed Enterprise\e[39m.
-
-3. Exit.
-
 "
-read -r -p "  Please enter the number[1-3]: " Input_Number
-echo ""
-case "$Input_Number" in
-  1)
-  Server_Edition="OLS"
-  ;;
-  2)
-  Interactive_Mode_License_Input
-  ;;
-  3)
-  exit
-  ;;
-  *)
-  echo -e "  Please enter the right number [1-3]\n"
-  exit
-  ;;
-esac
-
+#1. Install CyberPanel with \e[31mOpenLiteSpeed\e[39m.
+#
+#2. Install Cyberpanel with \e[31mLiteSpeed Enterprise\e[39m.
+#
+#3. Exit.
+#
+#"
+#read -r -p "  Please enter the number[1-3]: " Input_Number
+#echo ""
+#case "$Input_Number" in
+#  1)
+#  Server_Edition="OLS"
+#  ;;
+#  2)
+#  Interactive_Mode_License_Input
+#  ;;
+#  3)
+#  exit
+#  ;;
+#  *)
+#  echo -e "  Please enter the right number [1-3]\n"
+#  exit
+#  ;;
+#esac
+Server_Edition="OLS"
 echo -e "\nInstall Full service for CyberPanel? This will include PowerDNS, Postfix and Pure-FTPd."
 echo -e ""
 printf "%s" "Full installation [Y/n]: "
@@ -684,58 +685,64 @@ else
   echo -e "\nLocal MySQL selected..."
 fi
 
-echo -e "\nPress \e[31mEnter\e[39m key to continue with latest version or Enter specific version such as: \e[31m1.9.4\e[39m , \e[31m2.0.1\e[39m , \e[31m2.0.2\e[39m ...etc"
-printf "%s" ""
-read -r Tmp_Input
+#echo -e "\nPress \e[31mEnter\e[39m key to continue with latest version or Enter specific version such as: \e[31m1.9.4\e[39m , \e[31m2.0.1\e[39m , \e[31m2.0.2\e[39m ...etc"
+#printf "%s" ""
+#read -r Tmp_Input
+#
+#if [[ $Tmp_Input = "" ]]; then
+#  echo -e "Branch name set to $Branch_Name"
+#else
+#  Branch_Check "$Tmp_Input"
+#fi
 
-if [[ $Tmp_Input = "" ]]; then
-  echo -e "Branch name set to $Branch_Name"
-else
-  Branch_Check "$Tmp_Input"
-fi
+#echo -e "\nPlease choose to use default admin password \e[31m1234567\e[39m, randomly generate one \e[31m(recommended)\e[39m or specify the admin password?"
+#printf "%s" "Choose [d]fault, [r]andom or [s]et password: [d/r/s] "
+#read -r Tmp_Input
+#
+#if [[ $Tmp_Input =~ ^(d|D| ) ]] || [[ -z $Tmp_Input ]]; then
+#  Admin_Pass="1234567"
+#  echo -e "\nAdmin password will be set to $Admin_Pass\n"
+#elif [[ $Tmp_Input =~ ^(r|R) ]]; then
+#  Admin_Pass=$(
+#    head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16
+#    echo ''
+#    )
+#  echo -e "\nAdmin password will be provided once installation is completed...\n"
+#elif [[ $Tmp_Input =~ ^(s|S) ]]; then
+#  Custom_Pass="True"
+#  echo -e "\nPlease enter your password:"
+#  printf "%s" ""
+#  read -r -s -p "Password: " Tmp_Input
+#  if [[ -z "$Tmp_Input" ]]; then
+#    echo -e "\nPlease do not use empty string...\n"
+#    exit
+#  fi
+#  if [[ ${#Tmp_Input} -lt 8 ]]; then
+#    echo -e "\nPassword length less than 8 digital, please choose a more complicated password.\n"
+#    exit
+#  fi
+#  Tmp_Input1=$Tmp_Input
+#  read -r -s -p "Confirm Password:" Tmp_Input
+#  if [[ -z "$Tmp_Input" ]]; then
+#    echo -e "\nPlease do not use empty string...\n"
+#    exit
+#  fi
+#  if [[ "$Tmp_Input" = "$Tmp_Input1" ]]; then
+#    Admin_Pass=$Tmp_Input
+#  else
+#    echo -e "\nRepeated password didn't match , please check...\n"
+#    exit
+#  fi
+#else
+#  Admin_Pass="1234567"
+#  echo -e "\nAdmin password will be set to $Admin_Pass\n"
+#fi
 
-echo -e "\nPlease choose to use default admin password \e[31m1234567\e[39m, randomly generate one \e[31m(recommended)\e[39m or specify the admin password?"
-printf "%s" "Choose [d]fault, [r]andom or [s]et password: [d/r/s] "
-read -r Tmp_Input
-
-if [[ $Tmp_Input =~ ^(d|D| ) ]] || [[ -z $Tmp_Input ]]; then
-  Admin_Pass="1234567"
-  echo -e "\nAdmin password will be set to $Admin_Pass\n"
-elif [[ $Tmp_Input =~ ^(r|R) ]]; then
   Admin_Pass=$(
-    head /dev/urandom | tr -dc A-Za-z0-9 | head -c 16
+    head /dev/urandom | tr -dc A-Za-z0-9 | head -c 20
     echo ''
     )
   echo -e "\nAdmin password will be provided once installation is completed...\n"
-elif [[ $Tmp_Input =~ ^(s|S) ]]; then
-  Custom_Pass="True"
-  echo -e "\nPlease enter your password:"
-  printf "%s" ""
-  read -r -s -p "Password: " Tmp_Input
-  if [[ -z "$Tmp_Input" ]]; then
-    echo -e "\nPlease do not use empty string...\n"
-    exit
-  fi
-  if [[ ${#Tmp_Input} -lt 8 ]]; then
-    echo -e "\nPassword length less than 8 digital, please choose a more complicated password.\n"
-    exit
-  fi
-  Tmp_Input1=$Tmp_Input
-  read -r -s -p "Confirm Password:" Tmp_Input
-  if [[ -z "$Tmp_Input" ]]; then
-    echo -e "\nPlease do not use empty string...\n"
-    exit
-  fi
-  if [[ "$Tmp_Input" = "$Tmp_Input1" ]]; then
-    Admin_Pass=$Tmp_Input
-  else
-    echo -e "\nRepeated password didn't match , please check...\n"
-    exit
-  fi
-else
-  Admin_Pass="1234567"
-  echo -e "\nAdmin password will be set to $Admin_Pass\n"
-fi
 
 echo -e "\nDo you wish to install Memcached process and its PHP extension?"
 printf "%s" "Please select [Y/n]: "
@@ -770,28 +777,28 @@ else
 fi
 }
 
-Interactive_Mode_License_Input() {
-Server_Edition="Enterprise"
-echo -e "\nPlease note that your server has \e[31m$Total_RAM MB\e[39m RAM"
-echo -e "REMINDER: The \e[31mFree Start\e[39m license requires \e[31m2GB or less\e[39m of RAM and the \e[31mSite Owner\e[39m and \e[31mWeb Host Lite\e[39m licenses require \e[31m8GB or less\e[39m.\n"
-echo -e "If you do not have any license, you can also use trial license (if server has not used trial license before), type \e[31mTRIAL\e[39m\n"
-
-printf "%s" "Please input your serial number for LiteSpeed WebServer Enterprise: "
-read -r License_Key
-if [[ -z "$License_Key" ]]; then
-  echo -e "\nPlease provide license key\n"
-  exit
-fi
-
-echo -e "The serial number you input is: \e[31m$License_Key\e[39m\n"
-printf "%s" "Please verify it is correct. [y/N]: "
-read -r Tmp_Input
-if [[ -z "$Tmp_Input" ]]; then
-  echo -e "\nPlease type \e[31my\e[39m\n"
-  exit
-fi
-
-License_Check "$License_Key"
+#Interactive_Mode_License_Input() {
+#Server_Edition="Enterprise"
+#echo -e "\nPlease note that your server has \e[31m$Total_RAM MB\e[39m RAM"
+#echo -e "REMINDER: The \e[31mFree Start\e[39m license requires \e[31m2GB or less\e[39m of RAM and the \e[31mSite Owner\e[39m and \e[31mWeb Host Lite\e[39m licenses require \e[31m8GB or less\e[39m.\n"
+#echo -e "If you do not have any license, you can also use trial license (if server has not used trial license before), type \e[31mTRIAL\e[39m\n"
+#
+#printf "%s" "Please input your serial number for LiteSpeed WebServer Enterprise: "
+#read -r License_Key
+#if [[ -z "$License_Key" ]]; then
+#  echo -e "\nPlease provide license key\n"
+#  exit
+#fi
+#
+#echo -e "The serial number you input is: \e[31m$License_Key\e[39m\n"
+#printf "%s" "Please verify it is correct. [y/N]: "
+#read -r Tmp_Input
+#if [[ -z "$Tmp_Input" ]]; then
+#  echo -e "\nPlease type \e[31my\e[39m\n"
+#  exit
+#fi
+#
+#License_Check "$License_Key"
 
 #echo -e "\nWould you like use Redis Mass Hosting?"
 #echo -e "Please type Yes or No (with capital \e[31mY\e[39m, default No):"
@@ -801,7 +808,7 @@ License_Check "$License_Key"
 #  echo -e "\nRedis Mass Hosting is set to Yes...\n"
 #fi
 #  hide it for now
-}
+#}
 
 Pre_Install_Setup_Repository() {
 if [[ $Server_OS = "CentOS" ]] ; then
@@ -880,8 +887,8 @@ Debug_Log2 "Setting up repositories...,1"
 Download_Requirement() {
 for i in {1..50} ;
   do
-  wget -O /usr/local/requirments.txt "${Git_Content_URL}/stable/requirments.txt"
-  if grep -q "Django==" /usr/local/requirments.txt ; then
+  wget -O /usr/local/requirements.txt "${Git_Content_URL}/stable/requirements.txt"
+  if grep -q "Django==" /usr/local/requirements.txt ; then
     break
   else
     echo -e "\n Requirement list has failed to download for $i times..."
@@ -964,10 +971,10 @@ else
   . /usr/local/CyberPanel/bin/activate
 fi
 
-Debug_Log2 "Installing requirments..,3"
+Debug_Log2 "Installing requirements..,3"
 
-Retry_Command "pip install --default-timeout=3600 -r /usr/local/requirments.txt"
-  Check_Return "requirments" "no_exit"
+Retry_Command "pip install --default-timeout=3600 -r /usr/local/requirements.txt"
+  Check_Return "requirements" "no_exit"
 
 rm -rf cyberpanel
 echo -e "\nFetching files from ${Git_Clone_URL}...\n"
@@ -1117,7 +1124,7 @@ if ! grep -q "pid_max" /etc/rc.local 2>/dev/null ; then
   # Delete resolv.conf file
   rm -f /etc/resolv.conf
 
-  echo -e "nameserver 1.1.1.1" > /etc/resolv.conf
+  echo -e "nameserver 1.1.1.2" > /etc/resolv.conf
   echo -e "nameserver 8.8.8.8" >> /etc/resolv.conf
 
   systemctl restart systemd-networkd >/dev/null 2>&1
@@ -1146,48 +1153,48 @@ sed -i "${Line1}i\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ subprocess.call\(command, shell
 sed -i "${Line1}i\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ command = 'cat /etc/resolv.conf-tmp > /etc/resolv.conf'" installCyberPanel.py
 }
 
-License_Validation() {
-Debug_Log2 "Validating LiteSpeed license...,40"
-Current_Dir=$(pwd)
-
-if [ -f /root/cyberpanel-tmp ]; then
-  rm -rf /root/cyberpanel-tmp
-fi
-
-mkdir /root/cyberpanel-tmp
-cd /root/cyberpanel-tmp || exit
-
-Retry_Command "wget https://www.litespeedtech.com/packages/${LSWS_Stable_Version:0:1}.0/lsws-$LSWS_Stable_Version-ent-x86_64-linux.tar.gz"
-tar xzvf "lsws-$LSWS_Stable_Version-ent-x86_64-linux.tar.gz" >/dev/null
-cd "/root/cyberpanel-tmp/lsws-$LSWS_Stable_Version/conf"  || exit
-if [[ "$License_Key" = "Trial" ]]; then
-  Retry_Command "wget -q https://license.litespeedtech.com/reseller/trial.key"
-  sed -i "s|writeSerial = open('lsws-6.0/serial.no', 'w')|command = 'wget -q --output-document=./lsws-$LSWS_Stable_Version/trial.key https://license.litespeedtech.com/reseller/trial.key'|g" "$Current_Dir/installCyberPanel.py"
-  sed -i 's|writeSerial.writelines(self.serial)|subprocess.call(command, shell=True)|g' "$Current_Dir/installCyberPanel.py"
-  sed -i 's|writeSerial.close()||g' "$Current_Dir/installCyberPanel.py"
-else
-  echo "$License_Key" > serial.no
-fi
-
-cd "/root/cyberpanel-tmp/lsws-$LSWS_Stable_Version/bin"  || exit
-
-if [[ "$License_Key" = "Trial" ]]; then
-  License_Key="1111-2222-3333-4444"
-else
-  ./lshttpd -r
-fi
-
-if ./lshttpd -V |& grep "ERROR" || ./lshttpd -V |& grep "expire in 0 days" ; then
-  echo -e "\n\nThere appears to be an issue with license , please check above result..."
-  Debug_Log2 "There appears to be an issue with LiteSpeed License, make sure you are using correct serial key. [404]"
-  exit
-fi
-
-echo -e "\nLicense seems valid..."
-cd "$Current_Dir" || exit
-rm -rf /root/cyberpanel-tmp
-  #clean up the temp files
-}
+#License_Validation() {
+#Debug_Log2 "Validating LiteSpeed license...,40"
+#Current_Dir=$(pwd)
+#
+#if [ -f /root/cyberpanel-tmp ]; then
+#  rm -rf /root/cyberpanel-tmp
+#fi
+#
+#mkdir /root/cyberpanel-tmp
+#cd /root/cyberpanel-tmp || exit
+#
+#Retry_Command "wget https://www.litespeedtech.com/packages/${LSWS_Stable_Version:0:1}.0/lsws-$LSWS_Stable_Version-ent-x86_64-linux.tar.gz"
+#tar xzvf "lsws-$LSWS_Stable_Version-ent-x86_64-linux.tar.gz" >/dev/null
+#cd "/root/cyberpanel-tmp/lsws-$LSWS_Stable_Version/conf"  || exit
+#if [[ "$License_Key" = "Trial" ]]; then
+#  Retry_Command "wget -q https://license.litespeedtech.com/reseller/trial.key"
+#  sed -i "s|writeSerial = open('lsws-6.0/serial.no', 'w')|command = 'wget -q --output-document=./lsws-$LSWS_Stable_Version/trial.key https://license.litespeedtech.com/reseller/trial.key'|g" "$Current_Dir/installCyberPanel.py"
+#  sed -i 's|writeSerial.writelines(self.serial)|subprocess.call(command, shell=True)|g' "$Current_Dir/installCyberPanel.py"
+#  sed -i 's|writeSerial.close()||g' "$Current_Dir/installCyberPanel.py"
+#else
+#  echo "$License_Key" > serial.no
+#fi
+#
+#cd "/root/cyberpanel-tmp/lsws-$LSWS_Stable_Version/bin"  || exit
+#
+#if [[ "$License_Key" = "Trial" ]]; then
+#  License_Key="1111-2222-3333-4444"
+#else
+#  ./lshttpd -r
+#fi
+#
+#if ./lshttpd -V |& grep "ERROR" || ./lshttpd -V |& grep "expire in 0 days" ; then
+#  echo -e "\n\nThere appears to be an issue with license , please check above result..."
+#  Debug_Log2 "There appears to be an issue with LiteSpeed License, make sure you are using correct serial key. [404]"
+#  exit
+#fi
+#
+#echo -e "\nLicense seems valid..."
+#cd "$Current_Dir" || exit
+#rm -rf /root/cyberpanel-tmp
+#  #clean up the temp files
+#}
 
 Main_Installation() {
 Debug_Log2 "Starting main installation..,30"
@@ -1197,20 +1204,20 @@ if [[ -d /usr/local/CyberCP ]] ; then
   exit
 fi
 
-if [[ $Server_Edition = "Enterprise" ]] ; then
-  echo -e "\nValidating the license..."
-  echo -e "\nThis may take a minute..."
-  echo -e "\nPlease be patient...\n"
-
-  License_Validation
-
-  sed -i "s|lsws-5.4.2|lsws-$LSWS_Stable_Version|g" installCyberPanel.py
-  sed -i "s|lsws-5.3.5|lsws-$LSWS_Stable_Version|g" installCyberPanel.py
-  sed -i "s|lsws-6.0|lsws-$LSWS_Stable_Version|g" installCyberPanel.py
-  #this sed must be done after license validation
-
-  Enterprise_Flag="--ent ent --serial "
-fi
+#if [[ $Server_Edition = "Enterprise" ]] ; then
+#  echo -e "\nValidating the license..."
+#  echo -e "\nThis may take a minute..."
+#  echo -e "\nPlease be patient...\n"
+#
+#  License_Validation
+#
+#  sed -i "s|lsws-5.4.2|lsws-$LSWS_Stable_Version|g" installCyberPanel.py
+#  sed -i "s|lsws-5.3.5|lsws-$LSWS_Stable_Version|g" installCyberPanel.py
+#  sed -i "s|lsws-6.0|lsws-$LSWS_Stable_Version|g" installCyberPanel.py
+#  #this sed must be done after license validation
+#
+#  Enterprise_Flag="--ent ent --serial "
+#fi
 
 sed -i 's|git clone https://github.com/tbaldur/cyberpanel-LTS|echo downloaded|g' install.py
 
@@ -1253,7 +1260,7 @@ if [[ "$Remote_MySQL" = "On" ]] ; then
 else
   Final_Flags+=(--remotemysql "${Remote_MySQL^^}")
 fi
-  #form up the final agurment for install.py
+  #form up the final argument for install.py
 if [[ "$Debug" = "On" ]] ; then
   Debug_Log "Final_Flags" "${Final_Flags[@]}"
 fi
@@ -1262,7 +1269,7 @@ fi
 
 
 if grep "CyberPanel installation successfully completed" /var/log/installLogs.txt >/dev/null; then
-  echo -e "\nCyberPanel installation sucessfully completed...\n"
+  echo -e "\nCyberPanel installation successfully completed...\n"
   Debug_Log2 "Main installation completed...,70"
 else
   echo -e "Oops, something went wrong..."
@@ -1462,7 +1469,8 @@ if [[ "$Watchdog" = "On" ]]; then
   wget -O /etc/cyberpanel/watchdog.sh "${Git_Content_URL}/stable/CPScripts/watchdog.sh"
   chmod 700 /etc/cyberpanel/watchdog.sh
   ln -s /etc/cyberpanel/watchdog.sh /usr/local/bin/watchdog
-  #shellcheck disable=SC2009
+
+  # shellcheck disable=SC2009
   pid=$(ps aux | grep "watchdog lsws" | grep -v grep | awk '{print $2}')
   if [[ $pid = "" ]]; then
     nohup watchdog lsws >/dev/null 2>&1 &
@@ -1493,6 +1501,8 @@ fi
 }
 
 Post_Install_Display_Final_Info() {
+
+# shellcheck disable=SC2016
 snappymailAdminPass=$(grep SetPassword /usr/local/CyberCP/public/snappymail.php| sed -e 's|$oConfig->SetPassword(||g' -e "s|');||g" -e "s|'||g")
 Elapsed_Time="$((Time_Count / 3600)) hrs $(((SECONDS / 60) % 60)) min $((Time_Count % 60)) sec"
 echo "###################################################################"
@@ -1524,8 +1534,6 @@ echo -e "             Run \e[31mcyberpanel help\e[39m to get FAQ info"
 echo -e "             Run \e[31mcyberpanel upgrade\e[39m to upgrade it to latest version."
 echo -e "             Run \e[31mcyberpanel utility\e[39m to access some handy tools ."
 echo "                                                                   "
-echo "              Website : https://www.cyberpanel.net                 "
-echo "              Forums  : https://forums.cyberpanel.net              "
 echo "              Wikipage: https://docs.cyberpanel.net                "
 echo "              Docs    : https://cyberpanel.net/docs/               "
 echo "                                                                   "
@@ -1610,18 +1618,18 @@ virtualenv -p /usr/bin/python3 /usr/local/CyberCP
 fi
 
 if [[ "$Server_OS" = "Ubuntu" ]] && [[ "$Server_OS_Version" = "20" ]] ; then
-  # shellcheck disable=SC1091
+
   . /usr/local/CyberCP/bin/activate
    Check_Return
 else
-  # shellcheck disable=SC1091
+
   source /usr/local/CyberCP/bin/activate
    Check_Return
 
 fi
 
-Retry_Command "pip install --default-timeout=3600 -r /usr/local/requirments.txt"
- Check_Return "requirments.txt" "no_exit"
+Retry_Command "pip install --default-timeout=3600 -r /usr/local/requirements.txt"
+ Check_Return "requirements.txt" "no_exit"
 
 chown -R cyberpanel:cyberpanel /usr/local/CyberCP/lib
 chown -R cyberpanel:cyberpanel /usr/local/CyberCP/lib64 || true
