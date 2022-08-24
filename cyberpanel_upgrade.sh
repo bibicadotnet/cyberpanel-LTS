@@ -667,6 +667,16 @@ systemctl restart lscpd
 
 }
 
+Post_Upgrade_Fix_Missing_Contexts_SSL(){
+
+find /usr/local/lsws/conf/vhosts/ -type f -iname "vhost.conf" -exec bash -c '
+    for file do
+		grep -qF "/usr/local/lsws/Example/html/.well-known/acme-challenge" /${file#?} || echo -e "\ncontext /.well-known/acme-challenge {\n  location                /usr/local/lsws/Example/html/.well-known/acme-challenge\n  allowBrowse             1\n\n  rewrite  {\n\n  }\n  addDefaultCharset       off\n\n  phpIniOverride  {\n\n  }\n}" >> /${file#?}
+    done
+' _ {} +
+
+}
+
 Post_Install_Display_Final_Info() {
 Panel_Port=$(cat /usr/local/lscp/conf/bind.conf)
 if [[ $Panel_Port = "" ]] ; then
@@ -721,5 +731,7 @@ Pre_Upgrade_Required_Components
 Main_Upgrade
 
 Post_Upgrade_System_Tweak
+
+Post_Upgrade_Fix_Missing_Contexts_SSL
 
 Post_Install_Display_Final_Info
