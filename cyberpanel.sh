@@ -1772,7 +1772,7 @@ sed -i 's|#AllowTcpForwarding yes.*|AllowTcpForwarding no|g' /etc/ssh/sshd_confi
 sed -i 's|#GSSAPIAuthentication no.*|GSSAPIAuthentication no|g' /etc/ssh/sshd_config
 sed -i 's|#UseDNS no.*|UseDNS no|g' /etc/ssh/sshd_config
 sed -i 's|#UseDNS yes.*|UseDNS no|g' /etc/ssh/sshd_config
-sed -i 's|UseDNS yes.*|UseDNS no|g' /etc/ssh/sshd_config
+sed -i 's|UseDNS yes.*|UseDNS no|g' /etc/ssh/
 ## Fail2Ban
 # cp /etc/fail2ban/jail.{conf,local}
 # sed -i 's#bantime  = 10m.*#bantime  = -1#' /etc/fail2ban/jail.local
