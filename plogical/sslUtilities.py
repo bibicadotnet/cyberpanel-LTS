@@ -336,7 +336,8 @@ class sslUtilities:
                     subprocess.call(shlex.split(command))
 
                 try:
-                    command = acmePath + " --issue -d " + virtualHostName + " -d www." + virtualHostName \
+                    # command = acmePath + " --issue -d " + virtualHostName + " -d www." + virtualHostName \
+                    command = acmePath + " --issue -d " + virtualHostName \
                               + ' --cert-file ' + existingCertPath + '/cert.pem' + ' --key-file ' + existingCertPath + '/privkey.pem' \
                               + ' --fullchain-file ' + existingCertPath + '/fullchain.pem' + ' -w /usr/local/lsws/Example/html -k ec-256 --force --server letsencrypt'
 
@@ -390,10 +391,13 @@ class sslUtilities:
 
                 try:
                     logging.CyberCPLogFileWriter.writeToFile(
-                        "Trying to obtain SSL for: " + virtualHostName + ", www." + virtualHostName + ", " + aliasDomain + " and www." + aliasDomain + ",")
+                          "Trying to obtain SSL for: " + virtualHostName + ", " + aliasDomain ",")
+                        # "Trying to obtain SSL for: " + virtualHostName + ", www." + virtualHostName + ", " + aliasDomain + " and www." + aliasDomain + ",")
 
-                    command = acmePath + " --issue -d " + virtualHostName + " -d www." + virtualHostName \
-                              + ' -d ' + aliasDomain + ' -d www.' + aliasDomain\
+                    # command = acmePath + " --issue -d " + virtualHostName + " -d www." + virtualHostName \
+                            # + ' -d ' + aliasDomain + ' -d www.' + aliasDomain\
+                     command = acmePath + " --issue -d " + virtualHostName \
+                              + ' -d ' + aliasDomain \
                               + ' --cert-file ' + existingCertPath + '/cert.pem' + ' --key-file ' + existingCertPath + '/privkey.pem' \
                               + ' --fullchain-file ' + existingCertPath + '/fullchain.pem' + ' -w /usr/local/lsws/Example/html -k ec-256 --force --server letsencrypt'
 
