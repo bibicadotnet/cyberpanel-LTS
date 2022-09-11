@@ -303,7 +303,7 @@ class sslUtilities:
                     f'Status Code: {str(resp.status_code)} for: {URLFetchPathWWW}. Error: {resp.text}')
         except BaseException as msg:
             logging.CyberCPLogFileWriter.writeToFile(
-                f'Status Code: Unkown for: {URLFetchPathWWW}. Error: {str(msg)}')
+                f'Status Code: Unknown for: {URLFetchPathWWW}. Error: {str(msg)}')
 
         try:
             resp = requests.get(URLFetchPathNONWWW, timeout=5)
