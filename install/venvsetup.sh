@@ -187,8 +187,8 @@ if [[ $SERVER_OS == "CentOS" ]] ; then
 			cd $DIR/lsmcd
 			./fixtimestamp.sh
 			./configure CFLAGS=" -O3" CXXFLAGS=" -O3"
-			make
-			make install
+			make -j
+			make -j install
 			systemctl enable lsmcd
 			systemctl start lsmcd
 			cd $DIR
@@ -209,8 +209,8 @@ if [[ $SERVER_OS == "Ubuntu" ]] ; then
 			cd $DIR/lsmcd
 			./fixtimestamp.sh
 			./configure CFLAGS=" -O3" CXXFLAGS=" -O3"
-			make
-			make install
+			make -j
+			make -j install
 			cd $DIR
 			systemctl enable lsmcd
 			systemctl start lsmcd
@@ -786,8 +786,8 @@ for version in $(ls /usr/local/lsws | grep lsphp);
 			fi
 		/usr/local/lsws/${version}/bin/phpize
 		./configure --with-php-config=/usr/local/lsws/${version}/bin/php-config${version2}
-		make
-		make install
+		make -j
+		make -j install
 		echo "extension=timezonedb.so" > /usr/local/lsws/${version}/etc/php/${version2}/mods-available/20-timezone.ini
 		make clean
 	fi

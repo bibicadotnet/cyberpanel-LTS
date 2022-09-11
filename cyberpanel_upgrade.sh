@@ -542,7 +542,7 @@ wget https://www.litespeedtech.com/packages/lsapi/wsgi-lsapi-1.7.tgz
 tar xf wsgi-lsapi-1.7.tgz
 cd wsgi-lsapi-1.7 || exit
 /usr/local/CyberPanel/bin/python ./configure.py
-make
+make -j
 
 rm -f /usr/local/CyberCP/bin/lswsgi
 cp lswsgi /usr/local/CyberCP/bin/

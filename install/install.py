@@ -1665,7 +1665,7 @@ autocreate_system_folders = On
             command = "/usr/local/CyberPanel/bin/python ./configure.py"
             preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
 
-            command = "make"
+            command = "make -j"
             preFlightsChecks.call(command, self.distro, command, command, 1, 0, os.EX_OSERR)
 
             if not os.path.exists('/usr/local/CyberCP/bin/'):

@@ -296,8 +296,8 @@ read TMP_YN
 				cd $DIR/lsmcd || exit
 				./fixtimestamp.sh
 				./configure CFLAGS=" -O3" CXXFLAGS=" -O3"
-				make
-				make install
+				make -j
+				make -j install
 				cd $DIR || exit
 		fi
 		if systemctl is-active --quiet lsmcd ; then

@@ -89,8 +89,8 @@ else
   cd libsodium-*
   /usr/local/lsws/lsphp74/bin/phpize
   ./configure --with-php-config=/usr/local/lsws/lsphp74/bin/php-config7.4
-  make
-  make install
+  make -j
+  make -j install
   echo "extension=sodium.so" > /usr/local/lsws/lsphp74/etc/php/7.4/mods-available/20-sodium.ini
   pkill lsphp74
   		echo -e "\nInstalling lsphp74-sodium"
