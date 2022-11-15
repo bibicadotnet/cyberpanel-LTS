@@ -437,7 +437,7 @@ class sslUtilities:
 
                 try:
                     logging.CyberCPLogFileWriter.writeToFile(
-                        "Trying to obtain SSL for: " + virtualHostName ", " + aliasDomain + ",")
+                        "Trying to obtain SSL for: " + virtualHostName + ", " + aliasDomain + ",")
 
                     # command = acmePath + " --issue -d " + virtualHostName + " -d www." + virtualHostName \
                             # + ' -d ' + aliasDomain + ' -d www.' + aliasDomain\
