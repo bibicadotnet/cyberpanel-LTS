@@ -1289,8 +1289,8 @@ if [[ $Server_OS = "CentOS" ]]; then
   cd "$Current_Dir/lsmcd-master"  || exit
   ./fixtimestamp.sh
   ./configure CFLAGS=" -O3" CXXFLAGS=" -O3"
-  make
-  make install
+  make -j
+  make -j install
   systemctl enable lsmcd
   systemctl start lsmcd
   cd "$Current_Dir"  || exit
@@ -1302,8 +1302,8 @@ else
   cd "$Current_Dir/lsmcd-master"  || exit
   ./fixtimestamp.sh
   ./configure CFLAGS=" -O3" CXXFLAGS=" -O3"
-  make
-  make install
+  make -j
+  make -j install
   cd "$Current_Dir"  || exit
   systemctl enable lsmcd
   systemctl start lsmcd
@@ -1420,8 +1420,8 @@ for PHP_Version in /usr/local/lsws/lsphp?? ;
       "${PHP_Version}"/bin/pear config-set temp_dir "${PHP_Version}/tmp"
       "${PHP_Version}"/bin/phpize
       ./configure --with-php-config="${PHP_Version}"/bin/php-config
-      make
-      make install
+      make -j
+      make -j install
       echo "extension=timezonedb.so" > "${PHP_Version}/etc/php.d/20-timezone.ini"
       make clean
       sed -i 's|expose_php = On|expose_php = Off|g' "$PHP_INI_Path"
@@ -1429,8 +1429,8 @@ for PHP_Version in /usr/local/lsws/lsphp?? ;
     else
       "${PHP_Version}"/bin/phpize
       ./configure --with-php-config="${PHP_Version}"/bin/php-config
-      make
-      make install
+      make -j
+      make -j install
       echo "extension=timezonedb.so" > "/usr/local/lsws/${PHP_Version: 16:7}/etc/php/${PHP_Version: 21:1}.${PHP_Version: 22:1}/mods-available/20-timezone.ini"
       make clean
       sed -i 's|expose_php = On|expose_php = Off|g' "$PHP_INI_Path"
@@ -1780,6 +1780,15 @@ sed -i 's|UseDNS yes.*|UseDNS no|g' /etc/ssh/sshd_config
 # sed -i 's#maxretry = 5.*#maxretry = 3#' /etc/fail2ban/jail.local
 ## Default php version from 73 to 74
 sed -i "s|lsphp73/bin/lsphp|lsphp74/bin/lsphp|g" /usr/local/lsws/conf/httpd_config.conf
+
+## Upgrade redis to 7
+# rhel /almalinux 8.6
+if [[ "$Server_OS_Version" = "8" ]] ; then
+	sudo dnf install http://rpms.remirepo.net/enterprise/remi-release-8.rpm -y &&
+	dnf module enable redis:remi-7.0 &&
+	dnf upgrade -y 
+fi
+
 }
 
 echo -e "\nInitializing...\n"
