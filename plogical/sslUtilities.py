@@ -388,12 +388,12 @@ class sslUtilities:
                               + ' --fullchain-file ' + existingCertPath + '/fullchain.pem' + ' -w /usr/local/lsws/Example/html -k ec-256 --force --server letsencrypt'
 
                     if WWWStatus and NONWWWStatus:
-                        logging.CyberCPLogFileWriter.writeToFile("Trying to obtain SSL for: " + virtualHostName + " and: www." + virtualHostName, 0)
+                        logging.CyberCPLogFileWriter.writeToFile("Trying to obtain SSL for: " + virtualHostName, 0)
 
                         logging.CyberCPLogFileWriter.writeToFile(command, 0)
 
                         output = subprocess.check_output(shlex.split(command)).decode("utf-8")
-                        logging.CyberCPLogFileWriter.writeToFile("Successfully obtained SSL for: " + virtualHostName + " and: www." + virtualHostName, 0)
+                        logging.CyberCPLogFileWriter.writeToFile("Successfully obtained SSL for: " + virtualHostName, 0)
 
                         logging.CyberCPLogFileWriter.SendEmail(sender_email, adminEmail, output, 'SSL Notification for %s.' % (virtualHostName))
                     else:
@@ -402,9 +402,9 @@ class sslUtilities:
 
                 except subprocess.CalledProcessError:
                     logging.CyberCPLogFileWriter.writeToFile(
-                        "Failed to obtain SSL for: " + virtualHostName + " and: www." + virtualHostName, 0)
+                        "Failed to obtain SSL for: " + virtualHostName, 0)
 
-                    finalText = "Failed to obtain SSL for: " + virtualHostName + " and: www." + virtualHostName
+                    finalText = "Failed to obtain SSL for: " + virtualHostName
 
                     try:
                         command = acmePath + " --issue -d " + virtualHostName + ' --cert-file ' + existingCertPath \
@@ -448,11 +448,11 @@ class sslUtilities:
 
                     output = subprocess.check_output(shlex.split(command)).decode("utf-8")
                     logging.CyberCPLogFileWriter.writeToFile(
-                        "Successfully obtained SSL for: " + virtualHostName + ", www." + virtualHostName + ", " + aliasDomain + "and www." + aliasDomain + ",")
+                        "Successfully obtained SSL for: " + virtualHostName + ", " + aliasDomain ",")
 
                 except subprocess.CalledProcessError:
                     logging.CyberCPLogFileWriter.writeToFile(
-                        "Failed to obtain SSL for: " + virtualHostName + ", www." + virtualHostName + ", " + aliasDomain + "and www." + aliasDomain + ",")
+                        "Failed to obtain SSL for: " + virtualHostName + ", " + aliasDomain ",")
                     return 0
 
             ##
