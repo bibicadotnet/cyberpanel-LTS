@@ -448,11 +448,11 @@ class sslUtilities:
 
                     output = subprocess.check_output(shlex.split(command)).decode("utf-8")
                     logging.CyberCPLogFileWriter.writeToFile(
-                        "Successfully obtained SSL for: " + virtualHostName + ", " + aliasDomain ",")
+                        "Successfully obtained SSL for: " + virtualHostName + ", " + aliasDomain)
 
                 except subprocess.CalledProcessError:
                     logging.CyberCPLogFileWriter.writeToFile(
-                        "Failed to obtain SSL for: " + virtualHostName + ", " + aliasDomain ",")
+                        "Failed to obtain SSL for: " + virtualHostName + ", " + aliasDomain)
                     return 0
 
             ##
